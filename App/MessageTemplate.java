@@ -1,3 +1,5 @@
+package App;
+
 abstract class MessageTemplate {
     private String subject;
     private String content;
