@@ -1,8 +1,9 @@
-package App.Messages;
+package src.model.Messages;
 
 import java.util.List;
 
-import App.User;
+import src.model.User;
+import src.model.ComponentOrder;
 
 public abstract class MessageTemplate {
     private String subject;

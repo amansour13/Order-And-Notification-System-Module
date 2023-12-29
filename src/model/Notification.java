@@ -1,7 +1,7 @@
-package App;
+package src.model;
 
-import App.Channels.ChannelStrategy;
-import App.Messages.MessageTemplate;
+import src.Channels.ChannelStrategy;
+import src.model.Messages.MessageTemplate;
 
 public class Notification {
     private ChannelStrategy channel;

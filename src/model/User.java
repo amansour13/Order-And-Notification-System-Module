@@ -8,7 +8,7 @@ public class User {
 	private String location;
 	private Loc nearByLoc;
 	private ComponentOrder order;
-	private Double balance;
+	private Double balance = 0.0;
 	private boolean isLogged;
 	
 	public ComponentOrder getOrder() {

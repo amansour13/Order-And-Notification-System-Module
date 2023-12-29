@@ -1,6 +1,6 @@
-package App.Channels;
+package src.Channels;
 
-public class Email extends ChannelStrategy {
+public class SMS extends ChannelStrategy {
     @Override
     void send() {
         // TODO Auto-generated method stub
