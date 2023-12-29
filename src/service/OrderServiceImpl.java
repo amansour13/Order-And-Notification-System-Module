@@ -1,7 +1,6 @@
 package src.service;
 
 import src.Channels.ChannelStrategy;
-import src.Channels.SMS;
 import src.model.ComponentOrder;
 import src.model.Order;
 import src.model.User;
@@ -17,7 +16,7 @@ import static src.util.Database.users;
 import static src.util.Database.stats;
 import static src.util.Database.notificationsQueue;
 
-import java.nio.channels.Channel;
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
@@ -30,6 +29,7 @@ public class OrderServiceImpl implements OrderService{
             Order tempOrder = (Order) user.getOrder();
             if (!tempOrder.getStatus().equals("placed")){
                 tempOrder.setStatus("placed");
+                
                 Notification notification = new Notification();
                 MessageTemplate message = new Placement();
                 Class<?> clazz = Class.forName(className); //TODO: not experimented yet 
@@ -37,6 +37,7 @@ public class OrderServiceImpl implements OrderService{
                 message.createMessage(tempOrder, user);
                 notification.setMessage(message);
                 notification.setChannel((ChannelStrategy)channel);
+                
                 notificationsQueue.add(notification);
                 stats.placeTempCounter++;
             }
@@ -47,27 +48,32 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public void shipOrder(User user,String className) {
+    public void shipOrder(User user, String className) {
        try {
             Order tempOrder = (Order) user.getOrder();
             if (!tempOrder.getStatus().equals("shipped")){
                 tempOrder.setStatus("shipped");
                 tempOrder.setTimeShip(LocalDate.now());
                 orders.put(tempOrder.getID(), tempOrder);
-                // TODO: add to notifications Queue
+                
                 Notification notification = new Notification();
                 MessageTemplate message = new Shipment();
-                 Class<?> clazz = Class.forName(className); //TODO: not experimented yet 
+                Class<?> clazz = Class.forName(className); //TODO: not experimented yet 
                 Object channel =  clazz.getDeclaredConstructor().newInstance();
                 message.createMessage(tempOrder, user);
                 notification.setMessage(message);
                 notification.setChannel((ChannelStrategy)channel);
                 notificationsQueue.add(notification);
-                // TODO: Deduct the fees and order price
+                
+                // Deduct the fees and order price from the simple order
+                if(tempOrder.getOrderType().equals("simple") && user.getBalance() >= (tempOrder.getTotalPrice() + tempOrder.getShippingFees())){
+                    user.setBalance(user.getBalance() - (tempOrder.getTotalPrice() + tempOrder.getShippingFees()));
+                }
 
-                // if(tempOrder.getOrderType().equals("simple")){
-                //     user.setBalance(user.getBalance());
-                // }
+                // TODO : Deduct the fees and order price in case of compound orders
+                //user.setBalance(user.getBalance() - tempOrder.getTotalPrice());
+                    
+                    
                 stats.shipTempCounter++;
             }
         } catch (Exception e) {
@@ -82,33 +88,17 @@ public class OrderServiceImpl implements OrderService{
             // cacnel -> (placed)
             if (userOrder.getStatus().equals("placed"))
             {
-                userOrder.setStatus("cancelled");
-                orders.put(userOrder.getID(), userOrder);
-                userOrder = new Order(orders.size(), "none", user.getUsername());
-                stats.cancelTempCounter+=1;
+                sendCancelNotify(user, orderID, className);
             }
-            
+
             // cancel -> (shipped)
             // Check if the difference is exactly one day
             long daysDifference = ChronoUnit.DAYS.between(LocalDate.now(), userOrder.getTimeShip());
             boolean checkTime = Math.abs(daysDifference) == 1;
             if (userOrder.getStatus().equals("shipped") && checkTime)
             {
-                userOrder.setStatus("cancelled");
-                orders.put(userOrder.getID(), userOrder);
-                userOrder = new Order(orders.size(), "none", user.getUsername());
-                stats.cancelTempCounter+=1;
+                sendCancelNotify(user, orderID, className);
             }
-
-            // TODO: add to notifications Queue
-               Notification notification = new Notification();
-                MessageTemplate message = new Cancellation();
-                  Class<?> clazz = Class.forName(className); //TODO: not experimented yet 
-                Object channel =  clazz.getDeclaredConstructor().newInstance();
-                message.createMessage(userOrder, user);
-                notification.setMessage(message);
-                notification.setChannel((ChannelStrategy)channel);
-                notificationsQueue.add(notification);
         } catch (Exception e) {
             System.out.println("Exception in cancelOrder as" + e.getMessage());
         }
@@ -141,6 +131,7 @@ public class OrderServiceImpl implements OrderService{
             for (ComponentOrder order : userOrders.getComponents()) {
                 Order tempOrder = (Order) order; 
                 if (tempOrder.getOwner().equals(username)){
+                    tempOrder.setTotalPrice(products.get(productID).getPrice() + tempOrder.getTotalPrice());
                     tempOrder.addComponent(products.get(productID));
                     return true;
                 }
@@ -148,6 +139,7 @@ public class OrderServiceImpl implements OrderService{
 
             // first time you order for specific username (yourself, others)
             Order currentOrder = new Order(orders.size(), (username.equals(user.getUsername()))?"simple":"compound", username);
+            currentOrder.setTotalPrice(products.get(productID).getPrice() + currentOrder.getTotalPrice());
             currentOrder.addComponent(products.get(productID));
             userOrders.addComponent(currentOrder);
             return true;
@@ -159,4 +151,21 @@ public class OrderServiceImpl implements OrderService{
 
     }
 
+
+    private void sendCancelNotify(User user, String orderID, String className) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException{
+        Order userOrder = (Order) user.getOrder();
+        userOrder.setStatus("cancelled");
+        orders.put(userOrder.getID(), userOrder);
+        userOrder = new Order(orders.size(), "none", user.getUsername());
+
+        Notification notification = new Notification();
+        MessageTemplate message = new Cancellation();
+        Class<?> clazz = Class.forName(className); //TODO: not experimented yet 
+        Object channel =  clazz.getDeclaredConstructor().newInstance();
+        message.createMessage(userOrder, user);
+        notification.setMessage(message);
+        notification.setChannel((ChannelStrategy)channel);
+        notificationsQueue.add(notification);
+        stats.cancelTempCounter+=1;
+    }
 }

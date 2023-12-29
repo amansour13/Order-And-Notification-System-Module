@@ -1,7 +1,6 @@
 package src.model.Messages;
 import src.model.ComponentOrder;
 import src.model.User;
-import java.util.List;
 
 
 public class Placement extends MessageTemplate {

@@ -12,7 +12,7 @@ public class Order implements ComponentOrder {
     private String orderType;
     private String owner;
     private String status;
-    private Double totalPrice;
+    private Double totalPrice = 0.0;
     
     public Double getTotalPrice() {
         return totalPrice;
@@ -42,6 +42,7 @@ public class Order implements ComponentOrder {
         this.orderType = orderType;
         this.owner = owner;
         status = "none";
+        totalPrice = 0.0;
     }
 
     public ArrayList<ComponentOrder> getComponents() {

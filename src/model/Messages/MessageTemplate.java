@@ -1,7 +1,5 @@
 package src.model.Messages;
 
-import java.util.List;
-
 import src.model.User;
 import src.model.ComponentOrder;
 

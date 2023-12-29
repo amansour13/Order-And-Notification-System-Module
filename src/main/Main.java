@@ -1,30 +1,23 @@
 package src.main;
+
+import src.model.User;
+import src.service.UserServiceImpl;
+
 public class Main {
     public static void main(String[] args) {
 
-        // PersonServiceImpl personServiceImpl = new PersonServiceImpl();
+        UserServiceImpl personServiceImpl = new UserServiceImpl();
         
-        // Person p1 = new Person();
-        // p1.setName("Ahmed");
-        // p1.setAge(20);
-        // p1.setId(1);
+        User p1 = new User();
+        p1.setUsername("k");
+        p1.setPassword("1");
         
-        // personServiceImpl.addPerson(p1);
-        
-        // Person p2 = new Person();
-        // p2.setName("Mohamed");
-        // p2.setAge(30);
-        // p2.setId(2);
+        personServiceImpl.addUser(p1);
         
         // personServiceImpl.addPerson(p2);
         
-        // System.out.println("get Person by id: 1");
-        // System.out.println(personServiceImpl.getPerson(1));
+        System.out.println("get Person by id: 1");
+        System.out.println(personServiceImpl.getUser("k", "1"));
         
-        // System.out.println("get All Persons");
-        // Person [] persons = personServiceImpl.getAllPersons();
-        // for(Person person : persons){
-        //     System.out.println(person);
-        // }
     }
 }
