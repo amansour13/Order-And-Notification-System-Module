@@ -7,7 +7,7 @@ public class User {
     private String phone;
     private String location;
     private String nearByLocation;
-    private double balance;
+    private double balance = 0;
 
     
     public String getUsername() {
@@ -49,8 +49,8 @@ public class User {
     public double getBalance() {
         return balance;
     }
-    public void setBalance(double balance) {
-        this.balance = balance;
+    public void addBalance(double balance) {
+        this.balance += balance;
     }
 
     
