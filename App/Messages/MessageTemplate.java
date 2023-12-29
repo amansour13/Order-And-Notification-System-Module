@@ -1,6 +1,6 @@
-package App;
+package App.Messages;
 
-abstract class MessageTemplate {
+public abstract class MessageTemplate {
     private String subject;
     private String content;
     private String language;
