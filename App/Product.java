@@ -1,3 +1,5 @@
+package App;
+
 public class Product {
     private String serialNumber;
     private String name;
