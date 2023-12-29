@@ -6,8 +6,13 @@ import src.model.Product;
 import src.model.User;
 import src.service.OrderService;
 import src.service.OrderServiceImpl;
+import src.service.ProductService;
+import src.service.ProductServiceImpl;
+import src.service.StatisticsService;
+import src.service.StatisticsServiceImpl;
 import src.service.UserServiceImpl;
 import src.util.Database;
+import src.util.Statistics;
 
 public class Main {
     public static void main(String[] args) {
@@ -39,6 +44,16 @@ public class Main {
 
         System.out.println("get Person by id: 1");
         System.out.println(personServiceImpl.getUser("k", "1"));
+
+        StatisticsService ss = new StatisticsServiceImpl();
+        System.out.println("emailllllll: " + ss.getMostNotifyEmail());
+        System.out.println("phoneeeeeee: " + ss.getMostNotifyPhone());
+        System.out.println("templateeee: " + ss.getMostNotifyTemp());
+
+        ProductService prod = new ProductServiceImpl();
+        System.out.println("get all products: " + prod.getAllProducts());
+        System.out.println("get specific product: " + prod.getProduct("0133q143"));
+
 
 
     }

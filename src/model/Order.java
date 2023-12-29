@@ -7,7 +7,7 @@ public class Order implements ComponentOrder {
 
     private int ID;
     private LocalDate timeShip;
-    private ArrayList<ComponentOrder> components =new ArrayList<>();
+    private ArrayList<ComponentOrder> components = new ArrayList<>();
     private Double shippingFees=0.0;
     private String orderType;
     private String owner;
@@ -102,7 +102,7 @@ public class Order implements ComponentOrder {
     @Override
     public String toString() {
         String result = ID + "\n";
-        result += timeShip + "\n";
+        // result += timeShip + "\n";
         if (orderType.equals("simple")) {
             for (ComponentOrder componentOrder : components) {
                 result += componentOrder.toString();

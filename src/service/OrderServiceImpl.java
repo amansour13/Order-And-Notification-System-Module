@@ -92,8 +92,9 @@ public class OrderServiceImpl implements OrderService{
                 notificationsQueue.add(notification);
                 
                 // Deduct the fees and order price from the simple order
-                   
                 if(user.getBalance() >= (tempOrder.getTotalPrice() + tempOrder.getShippingFees())){
+                    // TODO: update the stock of each product
+                    // products.get(tempOrder.getID()).setStock(products.get(tempOrder.getID()).getStock() + );;
                     user.setBalance(user.getBalance() - (tempOrder.getTotalPrice() + tempOrder.getShippingFees()));
                   
                 }
@@ -156,27 +157,22 @@ public class OrderServiceImpl implements OrderService{
             }
             
             
-            Order userOrders = (Order) user.getOrder();
-         
+            Order userOrders = (Order) user.getOrder();// 1 order
             for (ComponentOrder order : userOrders.getComponents()) {
-                Product tempOrder = (Product) order;
-                if (userOrders.getOwner().equals(username)){
-                    userOrders.setTotalPrice(products.get(productID).getPrice()*quantity + userOrders.getTotalPrice());
-                    System.out.println(userOrders.getTotalPrice()); 
-                    userOrders.addComponent(tempOrder);
-                    user.setOrder(userOrders);
+                Order tempOrder = (Order) order;
+                if (tempOrder.getOwner().equals(username)){
+                    tempOrder.setTotalPrice(products.get(productID).getPrice() * quantity + tempOrder.getTotalPrice());
+                    tempOrder.addComponent(products.get(productID));
                     return true;
                 }
             }
 
             // first time you order for specific username (yourself, others)
-               
             Order currentOrder = new Order(orders.size(), (username.equals(user.getUsername()))?"simple":"compound", username);
             currentOrder.setTotalPrice(products.get(productID).getPrice()*quantity + currentOrder.getTotalPrice());
-            
             currentOrder.addComponent(products.get(productID));
             userOrders.addComponent(currentOrder);
-            user.setOrder(currentOrder);
+            user.setOrder(userOrders);
             return true;
 
         } catch (Exception e) {
