@@ -1,5 +1,5 @@
 package App.AccountManager;
-import App.User;
+import src.model.User;
 
 public abstract class IAccountManager {
     protected User user;

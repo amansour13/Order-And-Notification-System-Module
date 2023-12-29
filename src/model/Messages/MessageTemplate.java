@@ -10,7 +10,7 @@ public abstract class MessageTemplate {
     private String content;
     private String language;
     
-    abstract public String createMessage(ComponentOrder order, User user, List<User> compoundUsers);
+    abstract public void createMessage(ComponentOrder order, User user);
     
     public String getSubject() {
         return subject;

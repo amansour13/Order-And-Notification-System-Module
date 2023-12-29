@@ -9,8 +9,8 @@ public class Cancellation extends MessageTemplate{
 
 
     @Override
-    public String createMessage(ComponentOrder order, User user, List<User> compoundUsers) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createMessage'");
+    public void createMessage(ComponentOrder order, User user) {
+        String conString= String.format("Dear %s! , your booking of the  %d is confirmed. thanks for using our store :)", user.getUsername(), order.toString());
+        setContent(conString);
     }    
 }

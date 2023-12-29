@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 
-import javax.management.Notification;
+import src.model.Notification;
 
 public class Database{
 

@@ -3,7 +3,7 @@ package App.AccountManager;
 import java.util.Scanner;
 
 import App.Scan;
-import App.User;
+import src.model.User;
 
 public class AccountManager extends IAccountManager {
     
@@ -47,9 +47,9 @@ public class AccountManager extends IAccountManager {
 
     @Override
     public void addBalance(float newBalance) {
-        this.user.addBalance(newBalance);
+        // this.user.addBalance(newBalance);
     }
 
-    @Override
-    public User getUser() {return user;};
+    // @Override
+    // public User getUser() {return user;};
 }

@@ -5,11 +5,11 @@ import src.model.User;
 
 public interface OrderService {
     
-    public void placeOrder(User user);
+    public void placeOrder(User user,String className);
     
-    public void shipOrder(User user);
+    public void shipOrder(User user,String className);
     
-    public void cancelOrder(User user, String orderID);
+    public void cancelOrder(User user, String orderID,String className);
 
     public ComponentOrder getOrder(User user);
 

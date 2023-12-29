@@ -1,35 +1,53 @@
 package src.service;
 
+import src.Channels.ChannelStrategy;
+import src.Channels.SMS;
 import src.model.ComponentOrder;
 import src.model.Order;
 import src.model.User;
+import src.model.Messages.Cancellation;
+import src.model.Messages.MessageTemplate;
+import src.model.Messages.Placement;
+import src.model.Messages.Shipment;
+import src.model.Notification;
 
 import static src.util.Database.orders;
 import static src.util.Database.products;
 import static src.util.Database.users;
 import static src.util.Database.stats;
+import static src.util.Database.notificationsQueue;
 
+import java.nio.channels.Channel;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 public class OrderServiceImpl implements OrderService{
+    
 
     @Override
-    public void placeOrder(User user) {
+    public void placeOrder(User user,String className) {
         try {
             Order tempOrder = (Order) user.getOrder();
             if (!tempOrder.getStatus().equals("placed")){
                 tempOrder.setStatus("placed");
+                Notification notification = new Notification();
+                MessageTemplate message = new Placement();
+                Class<?> clazz = Class.forName(className); //TODO: not experimented yet 
+                Object channel =  clazz.getDeclaredConstructor().newInstance();
+                message.createMessage(tempOrder, user);
+                notification.setMessage(message);
+                notification.setChannel((ChannelStrategy)channel);
+                notificationsQueue.add(notification);
                 stats.placeTempCounter++;
             }
-            // TODO: add to notifications Queue
+            
         } catch (Exception e) {
             System.out.println("Exception in placeOrder as" + e.getMessage());
         }
     }
 
     @Override
-    public void shipOrder(User user) {
+    public void shipOrder(User user,String className) {
        try {
             Order tempOrder = (Order) user.getOrder();
             if (!tempOrder.getStatus().equals("shipped")){
@@ -37,7 +55,14 @@ public class OrderServiceImpl implements OrderService{
                 tempOrder.setTimeShip(LocalDate.now());
                 orders.put(tempOrder.getID(), tempOrder);
                 // TODO: add to notifications Queue
-                
+                Notification notification = new Notification();
+                MessageTemplate message = new Shipment();
+                 Class<?> clazz = Class.forName(className); //TODO: not experimented yet 
+                Object channel =  clazz.getDeclaredConstructor().newInstance();
+                message.createMessage(tempOrder, user);
+                notification.setMessage(message);
+                notification.setChannel((ChannelStrategy)channel);
+                notificationsQueue.add(notification);
                 // TODO: Deduct the fees and order price
 
                 // if(tempOrder.getOrderType().equals("simple")){
@@ -51,7 +76,7 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public void cancelOrder(User user, String orderID) {
+    public void cancelOrder(User user, String orderID,String className) {
         try {
             Order userOrder = (Order) user.getOrder();
             // cacnel -> (placed)
@@ -76,6 +101,14 @@ public class OrderServiceImpl implements OrderService{
             }
 
             // TODO: add to notifications Queue
+               Notification notification = new Notification();
+                MessageTemplate message = new Cancellation();
+                  Class<?> clazz = Class.forName(className); //TODO: not experimented yet 
+                Object channel =  clazz.getDeclaredConstructor().newInstance();
+                message.createMessage(userOrder, user);
+                notification.setMessage(message);
+                notification.setChannel((ChannelStrategy)channel);
+                notificationsQueue.add(notification);
         } catch (Exception e) {
             System.out.println("Exception in cancelOrder as" + e.getMessage());
         }
