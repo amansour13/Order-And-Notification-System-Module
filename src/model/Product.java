@@ -7,6 +7,14 @@ public class Product implements ComponentOrder{
     private Double price;
     private int stock;
     
+    public Product(String serialNumber, String name, String vendor, Category category, Double price, int stock) {
+        this.serialNumber = serialNumber;
+        this.name = name;
+        this.vendor = vendor;
+        this.category = category;
+        this.price = price;
+        this.stock = stock;
+    }
     public String getSerialNumber() {
         return serialNumber;
     }

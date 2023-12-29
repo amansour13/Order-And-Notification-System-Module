@@ -1,8 +1,11 @@
 package src.service;
 
 import src.Channels.ChannelStrategy;
+import src.Channels.Email;
+import src.Channels.SMS;
 import src.model.ComponentOrder;
 import src.model.Order;
+import src.model.Product;
 import src.model.User;
 import src.model.Messages.Cancellation;
 import src.model.Messages.MessageTemplate;
@@ -29,15 +32,26 @@ public class OrderServiceImpl implements OrderService{
             Order tempOrder = (Order) user.getOrder();
             if (!tempOrder.getStatus().equals("placed")){
                 tempOrder.setStatus("placed");
-                
+                 
                 Notification notification = new Notification();
                 MessageTemplate message = new Placement();
+                // ChannelStrategy channel;
+                // if(className=="SMS"){
+                //     channel = new SMS();
+                // }
+                // else{
+                //     channel = new Email();
+                // }
+                  tempOrder.setOrderType("simple"); //test
                 Class<?> clazz = Class.forName(className); //TODO: not experimented yet 
                 Object channel =  clazz.getDeclaredConstructor().newInstance();
                 message.createMessage(tempOrder, user);
+               
                 notification.setMessage(message);
                 notification.setChannel((ChannelStrategy)channel);
                 
+                notification.getChannel().send(user);
+                 System.out.println(notification.getMessage().getContent());
                 notificationsQueue.add(notification);
                 stats.placeTempCounter++;
             }
@@ -58,16 +72,30 @@ public class OrderServiceImpl implements OrderService{
                 
                 Notification notification = new Notification();
                 MessageTemplate message = new Shipment();
+                // ChannelStrategy channel;
+                //  if(className=="SMS"){
+                //     channel = new SMS();
+                // }
+                // else{
+                //     channel = new Email();
+                // }
+                  tempOrder.setOrderType("simple"); //test
                 Class<?> clazz = Class.forName(className); //TODO: not experimented yet 
                 Object channel =  clazz.getDeclaredConstructor().newInstance();
                 message.createMessage(tempOrder, user);
+                
                 notification.setMessage(message);
                 notification.setChannel((ChannelStrategy)channel);
+            
+                notification.getChannel().send(user);
+                System.out.println(notification.getMessage().getContent());
                 notificationsQueue.add(notification);
                 
                 // Deduct the fees and order price from the simple order
-                if(tempOrder.getOrderType().equals("simple") && user.getBalance() >= (tempOrder.getTotalPrice() + tempOrder.getShippingFees())){
+                   
+                if(user.getBalance() >= (tempOrder.getTotalPrice() + tempOrder.getShippingFees())){
                     user.setBalance(user.getBalance() - (tempOrder.getTotalPrice() + tempOrder.getShippingFees()));
+                  
                 }
 
                 // TODO : Deduct the fees and order price in case of compound orders
@@ -127,21 +155,28 @@ public class OrderServiceImpl implements OrderService{
                 return false;
             }
             
+            
             Order userOrders = (Order) user.getOrder();
+         
             for (ComponentOrder order : userOrders.getComponents()) {
-                Order tempOrder = (Order) order; 
-                if (tempOrder.getOwner().equals(username)){
-                    tempOrder.setTotalPrice(products.get(productID).getPrice() + tempOrder.getTotalPrice());
-                    tempOrder.addComponent(products.get(productID));
+                Product tempOrder = (Product) order;
+                if (userOrders.getOwner().equals(username)){
+                    userOrders.setTotalPrice(products.get(productID).getPrice()*quantity + userOrders.getTotalPrice());
+                    System.out.println(userOrders.getTotalPrice()); 
+                    userOrders.addComponent(tempOrder);
+                    user.setOrder(userOrders);
                     return true;
                 }
             }
 
             // first time you order for specific username (yourself, others)
+               
             Order currentOrder = new Order(orders.size(), (username.equals(user.getUsername()))?"simple":"compound", username);
-            currentOrder.setTotalPrice(products.get(productID).getPrice() + currentOrder.getTotalPrice());
+            currentOrder.setTotalPrice(products.get(productID).getPrice()*quantity + currentOrder.getTotalPrice());
+            
             currentOrder.addComponent(products.get(productID));
             userOrders.addComponent(currentOrder);
+            user.setOrder(currentOrder);
             return true;
 
         } catch (Exception e) {
@@ -165,6 +200,7 @@ public class OrderServiceImpl implements OrderService{
         message.createMessage(userOrder, user);
         notification.setMessage(message);
         notification.setChannel((ChannelStrategy)channel);
+        notification.getChannel().send(user);
         notificationsQueue.add(notification);
         stats.cancelTempCounter+=1;
     }

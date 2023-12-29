@@ -5,6 +5,7 @@ import src.model.Product;
 import src.model.User;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
@@ -18,8 +19,8 @@ public class Database{
     
     public static Map<Integer, ComponentOrder> orders = new HashMap<Integer, ComponentOrder>();
 
-    public static Statistics stats;
+    public static Statistics stats = new Statistics();
 
-    public static Queue<Notification> notificationsQueue;
+    public static Queue<Notification> notificationsQueue = new LinkedList<>();
       
 }

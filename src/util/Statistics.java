@@ -4,27 +4,37 @@ import java.util.Comparator;
 import java.util.PriorityQueue;
 
 public class Statistics {
-    public class Pair<K, V> {
-        private K key;
-        private V value;
-    
-        public Pair(K key, V value) {
+    public class Pair {
+        private String key;
+        private Integer value;
+        
+       
+
+        public void setKey(String key) {
+            this.key = key;
+        }
+
+        public void setValue(Integer value) {
+            this.value = value;
+        }
+
+        public Pair(String key, Integer value) {
             this.key = key;
             this.value = value;
         }
     
-        public K getKey() {
+        public String getKey() {
             return key;
         }
     
-        public V getValue() {
+        public Integer getValue() {
             return value;
         }
     }
 
-    public PriorityQueue<Pair<String, Integer>> emailsCounter = new PriorityQueue<>(Comparator.comparingInt(Pair::getValue));
+    public PriorityQueue<Pair> emailsCounter = new PriorityQueue<>(Comparator.comparingInt(Pair::getValue));
     
-    public PriorityQueue<Pair<String, Integer>> phonesCounter = new PriorityQueue<>(Comparator.comparingInt(Pair::getValue));
+    public PriorityQueue<Pair> phonesCounter = new PriorityQueue<>(Comparator.comparingInt(Pair::getValue));
 
     public int placeTempCounter;
     

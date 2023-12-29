@@ -7,8 +7,8 @@ public class Order implements ComponentOrder {
 
     private int ID;
     private LocalDate timeShip;
-    private ArrayList<ComponentOrder> components;
-    private Double shippingFees;
+    private ArrayList<ComponentOrder> components =new ArrayList<>();
+    private Double shippingFees=0.0;
     private String orderType;
     private String owner;
     private String status;

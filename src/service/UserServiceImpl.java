@@ -16,7 +16,9 @@ public class UserServiceImpl implements UserService {
                 return false;
             }
             // username doeasn't exist
+            p.setOrder(new Order(orders.size(), "none", p.getUsername()));
             users.put(p.getUsername(), p);
+            
         } catch (Exception e) {
             System.out.println("Exception in addUser as" + e.getMessage());
             return false;

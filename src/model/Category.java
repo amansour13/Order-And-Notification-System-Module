@@ -1,6 +1,6 @@
 package src.model;
 
-enum Category {
+public enum Category {
     SmartPhones,
     Tablets,
     PC,

@@ -1,6 +1,6 @@
 package src.model;
 
-enum Loc {
+public enum Loc {
     Dokki,
     Giza,
     October,
