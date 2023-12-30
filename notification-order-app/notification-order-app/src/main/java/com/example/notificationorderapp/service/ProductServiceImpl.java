@@ -26,7 +26,11 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public Product getProduct(String productID) {
         try {
-            return products.get(productID);
+            for (Product p : products.values()) {
+                if (p.getSerialNumber().equals(productID))
+                    return p;
+            }
+            return null;
         } catch (Exception e) {
             System.out.println("Exception in getProduct as" + e.getMessage());
             return null;
