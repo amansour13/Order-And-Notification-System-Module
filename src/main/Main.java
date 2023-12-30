@@ -32,9 +32,6 @@ public class Main {
         Database.products.put("0133142",s1);
         Database.products.put("0133143",s2);
 
-        for (Product p : Database.products.values()) {
-            System.out.println(p.getName() + ", " + p.getStock());
-        }
         // personServiceImpl.addPerson(p2);
         OrderService orderService = new OrderServiceImpl();
         orderService.addProductToOrder(p1,"0133142",1,"k");
@@ -45,24 +42,21 @@ public class Main {
         orderService.placeOrder(p1,"src.Channels.SMS");
         orderService.shipOrder(p1,"src.Channels.SMS");
 
-        System.out.println(p1.getBalance());
-// //        System.out.println(orderService.getOrder(p1).toString());
+        System.out.println(p1.getUsername() + ", " + p1.getBalance());
+        System.out.println(p2.getUsername() + ", " + p2.getBalance());
+        System.out.println("\nget the order: \n" + orderService.getOrder(p1).toString() + "\n");
 
-//         System.out.println("get Person by id: 1");
-//         System.out.println(personServiceImpl.getUser("k", "1"));
+        System.out.println("get Person by id: 1");
+        System.out.println(personServiceImpl.getUser("k", "1"));
 
-//         StatisticsService ss = new StatisticsServiceImpl();
-//         System.out.println("emailllllll: " + ss.getMostNotifyEmail());
-//         System.out.println("phoneeeeeee: " + ss.getMostNotifyPhone());
-//         System.out.println("templateeee: " + ss.getMostNotifyTemp());
+        StatisticsService ss = new StatisticsServiceImpl();
+        System.out.println("emailllllll: " + ss.getMostNotifyEmail());
+        System.out.println("phoneeeeeee: " + ss.getMostNotifyPhone());
+        System.out.println("templateeee: " + ss.getMostNotifyTemp());
 
-//         ProductService prod = new ProductServiceImpl();
-//         System.out.println("get all products: " + prod.getAllProducts());
-//         System.out.println("get specific product: " + prod.getProduct("0133q143"));
-
-        for (Product p : Database.products.values()) {
-            System.out.println(p.getName() + ", " + p.getStock());
-        }
+        ProductService prod = new ProductServiceImpl();
+        System.out.println("get all products: " + prod.getAllProducts());
+        System.out.println("get specific product: " + prod.getProduct("0133143"));
 
     }
 }

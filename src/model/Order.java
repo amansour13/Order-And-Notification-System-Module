@@ -101,7 +101,8 @@ public class Order implements ComponentOrder {
 
     @Override
     public String toString() {
-        String result = ID + "\n";
+        String result = "ID: " + ID + "\n";
+        result += "Owner: " + owner + "\n";
         // result += timeShip + "\n";
         if (orderType.equals("simple")) {
             result += "total price: " + totalPrice + "\n";
@@ -111,14 +112,15 @@ public class Order implements ComponentOrder {
             }
         }
         else if (orderType.equals("compound")) {
+            result += "Status: " +  status + "\n";
             for (ComponentOrder componentOrder : components) {
                 Order tempOrder = (Order) componentOrder;
-                result += tempOrder.ID + "\n";
+                // result += tempOrder.ID + "\n";
                 componentOrder.toString();
-                // for (ComponentOrder tempComponenOrder : tempOrder.components) {
-                //     result += tempComponenOrder.toString();
-                //     result += "\n----------------------------\n";
-                // }
+                for (ComponentOrder tempComponenOrder : tempOrder.components) {
+                    result += tempComponenOrder.toString();
+                    result += "\n----------------------------\n";
+                }
             }
         }
         return result;
