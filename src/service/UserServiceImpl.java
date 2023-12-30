@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
         try {
             // user exist
             if(users.get(username) != null && users.get(username).getPassword().equals(password)){
-                users.get(username).setOrder(new Order(orders.size(), "simple", username));
+                users.get(username).setOrder(new Order(orders.size(), "compound", username));
                 return users.get(username);
             }
         } catch (Exception e) {
