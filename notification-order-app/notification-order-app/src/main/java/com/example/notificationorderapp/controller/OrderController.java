@@ -119,5 +119,30 @@ public class OrderController {
 
         return new ResponseEntity<>(result, HttpStatus.CONFLICT);
     }
+
+        @PostMapping("/cancel")
+    public ResponseEntity<String> cancelorder(@RequestBody LoginValidator loginValidator) {
+        OrderService orderService = new OrderServiceImpl();
+        
+        UserService userService = new UserServiceImpl();
+        User user = userService.getUser(loginValidator.getUsername(), loginValidator.getPassword());
+        if (user == null) {
+            return new ResponseEntity<>("Wrong information", HttpStatus.UNAUTHORIZED);
+        }
+        
+        if (user.getOrder() == null) {
+            return new ResponseEntity<>("No order found", HttpStatus.NOT_FOUND);
+        }
+        
+        System.out.println(user.getBalance());
+        // TODO: is this the best way to use sms channel ???
+        String result = orderService.cancelOrder(user, "com.example.notificationorderapp.Channels.SMS");
+        System.out.println(user.getBalance());
+        if (result == "success") {
+            return new ResponseEntity<>("Order is cancelled", HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(result, HttpStatus.CONFLICT);
+    }
     
 }

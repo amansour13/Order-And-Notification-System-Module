@@ -141,13 +141,14 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public void cancelOrder(User user, String orderID,String className) {
+    public String cancelOrder(User user ,String className) {
         try {
             Order userOrder = (Order) user.getOrder();
             // cacnel -> (placed)
             if (userOrder.getStatus().equals("placed"))
             {
-                sendCancelNotify(user, orderID, className);
+                sendCancelNotify(user,  className);
+                return "success";
             }
 
             // cancel -> (shipped)
@@ -156,10 +157,16 @@ public class OrderServiceImpl implements OrderService{
             boolean checkTime = Math.abs(daysDifference) == 1;
             if (userOrder.getStatus().equals("shipped") && checkTime)
             {
-                sendCancelNotify(user, orderID, className);
+                sendCancelNotify(user,  className);
+                return "success";
             }
+            else{
+                return "Order cancellation failed due to the cancel request period time has been passed";
+            }
+            
         } catch (Exception e) {
             System.out.println("Exception in cancelOrder as" + e.getMessage());
+            return " failed";
         }
     }
 
@@ -220,7 +227,7 @@ public class OrderServiceImpl implements OrderService{
     }
 
 
-    private void sendCancelNotify(User user, String orderID, String className) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException{
+    private void sendCancelNotify(User user, String className) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException{
         Order userOrder = (Order) user.getOrder();
         userOrder.setStatus("cancelled");
         orders.put(userOrder.getID(), userOrder);

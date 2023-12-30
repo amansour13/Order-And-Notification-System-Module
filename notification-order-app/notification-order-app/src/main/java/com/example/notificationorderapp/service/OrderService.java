@@ -9,7 +9,7 @@ public interface OrderService {
     
     public String shipOrder(User user,String className);
     
-    public void cancelOrder(User user, String orderID,String className);
+    public String cancelOrder(User user, String className);
 
     public ComponentOrder getOrder(int id);
 
