@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"hello owrld\", \r\n    \"email\": \"karim@gmail.com\", \r\n    \"password\": \"thisispass\", \r\n    \"phone\": \"01117948389\",\r\n    \"location\": \"6 of october city\",\r\n    \"balance\": 9000.0\r\n}",
+							"raw": "{\r\n    \"username\": \"mazen\", \r\n    \"email\": \"karim@gmail.com\", \r\n    \"password\": \"thisispass\", \r\n    \"phone\": \"01117948389\",\r\n    \"location\": \"6 of october city\",\r\n    \"balance\": 9000.0\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -100,7 +100,141 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{baseUrl}}/products/111"
+						"url": "{{baseUrl}}/products/222"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "order",
+			"item": [
+				{
+					"name": "Add Product 1",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"mazen\", \r\n    \"password\": \"thisispass\", \r\n    \"productId\": \"222\",\r\n    \"quantity\": 1,\r\n    \"owner\": \"seno\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/order/add"
+					},
+					"response": []
+				},
+				{
+					"name": "Add Product 2",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"seno\", \r\n    \"password\": \"thisisanother\",\r\n    \"productId\": \"222\",\r\n    \"quantity\": 2,\r\n    \"owner\": \"seno\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/order/add"
+					},
+					"response": []
+				},
+				{
+					"name": "Place order 1",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"mazen\", \r\n    \"password\": \"thisispass\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/order/place"
+					},
+					"response": []
+				},
+				{
+					"name": "Ship order 1",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"mazen\", \r\n    \"password\": \"thisispass\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/order/ship"
+					},
+					"response": []
+				},
+				{
+					"name": "Place order 2",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"seno\", \r\n    \"password\": \"thisisanother\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/order/place"
+					},
+					"response": []
+				},
+				{
+					"name": "Ship order 2",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"seno\", \r\n    \"password\": \"thisisanother\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/order/ship"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Order",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"mazen\", \r\n    \"password\": \"thisispass\", \r\n    \"productId\": \"111\",\r\n    \"quantity\": 2,\r\n    \"owner\": \"mazen\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/order/get/1"
 					},
 					"response": []
 				}
