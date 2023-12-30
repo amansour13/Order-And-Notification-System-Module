@@ -10,6 +10,16 @@ public class User {
 	private ComponentOrder order;
 	private Double balance = 0.0;
 	private boolean isLogged;
+
+	public User() {}
+	public User(String username, String email, String password, String phone, String location, Double balance) {
+		this.email = email;
+		this.phone = phone;
+		this.username = username;
+		this.password = password;
+		this.location = location;
+		this.balance = balance;
+	}
 	
 	public ComponentOrder getOrder() {
 		return order;

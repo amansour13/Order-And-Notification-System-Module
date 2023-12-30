@@ -23,15 +23,17 @@ import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
+import javax.swing.border.CompoundBorder;
+
 public class OrderServiceImpl implements OrderService{
     
 
     @Override
     public void placeOrder(User user,String className) {
         try {
-            Order tempOrder = (Order) user.getOrder();
-            if (!tempOrder.getStatus().equals("placed")){
-                tempOrder.setStatus("placed");
+            Order order = (Order) user.getOrder();
+            if (!order.getStatus().equals("placed")){
+                order.setStatus("placed");
                  
                 Notification notification = new Notification();
                 MessageTemplate message = new Placement();
@@ -42,17 +44,20 @@ public class OrderServiceImpl implements OrderService{
                 // else{
                 //     channel = new Email();
                 // }
-                  tempOrder.setOrderType("simple"); //test
+                // tempOrder.setOrderType("simple"); //test
                 Class<?> clazz = Class.forName(className); //TODO: not experimented yet 
                 Object channel =  clazz.getDeclaredConstructor().newInstance();
-                message.createMessage(tempOrder, user);
-               
-                notification.setMessage(message);
-                notification.setChannel((ChannelStrategy)channel);
-                
-                notification.getChannel().send(user);
-                 System.out.println(notification.getMessage().getContent());
-                notificationsQueue.add(notification);
+
+
+                for (ComponentOrder o : order.getComponents()) {
+                    User u = users.get(((Order) o).getOwner());
+                    message.createMessage(o, u);
+                    notification.setMessage(message);
+                    notification.setChannel((ChannelStrategy)channel);
+                    notification.getChannel().send(u);
+                    System.out.println(notification.getMessage().getContent());
+                    notificationsQueue.add(notification);
+                }
                 stats.placeTempCounter++;
             }
             
@@ -64,11 +69,17 @@ public class OrderServiceImpl implements OrderService{
     @Override
     public void shipOrder(User user, String className) {
        try {
-            Order tempOrder = (Order) user.getOrder();
-            if (!tempOrder.getStatus().equals("shipped")){
-                tempOrder.setStatus("shipped");
-                tempOrder.setTimeShip(LocalDate.now());
-                orders.put(tempOrder.getID(), tempOrder);
+            Order order = (Order) user.getOrder();
+
+            if (!order.getStatus().equals("shipped")){
+                if (!payForEachOrder(order)) {
+                    System.out.println("Can't pay, balance not enough");
+                    return;
+                }
+
+                order.setStatus("shipped");
+                order.setTimeShip(LocalDate.now());
+                orders.put(order.getID(), order);
                 
                 Notification notification = new Notification();
                 MessageTemplate message = new Shipment();
@@ -79,23 +90,27 @@ public class OrderServiceImpl implements OrderService{
                 // else{
                 //     channel = new Email();
                 // }
-                  tempOrder.setOrderType("simple"); //test
+                //   order.setOrderType("simple"); //test
                 Class<?> clazz = Class.forName(className); //TODO: not experimented yet 
                 Object channel =  clazz.getDeclaredConstructor().newInstance();
-                message.createMessage(tempOrder, user);
+
+                for (ComponentOrder o : order.getComponents()) {
+                    User u = users.get(((Order) o).getOwner());
+                    message.createMessage(o, u);
+                    notification.setMessage(message);
+                    notification.setChannel((ChannelStrategy)channel);
+                    notification.getChannel().send(u);
+                    System.out.println(notification.getMessage().getContent());
+                    notificationsQueue.add(notification);
+                }
                 
-                notification.setMessage(message);
-                notification.setChannel((ChannelStrategy)channel);
-            
-                notification.getChannel().send(user);
-                System.out.println(notification.getMessage().getContent());
-                notificationsQueue.add(notification);
+
                 
                 // Deduct the fees and order price from the simple order
-                if(user.getBalance() >= (tempOrder.getTotalPrice() + tempOrder.getShippingFees())){
+                if(user.getBalance() >= (order.getTotalPrice() + order.getShippingFees())){
                     // TODO: update the stock of each product
                     // products.get(tempOrder.getID()).setStock(products.get(tempOrder.getID()).getStock() + );;
-                    user.setBalance(user.getBalance() - (tempOrder.getTotalPrice() + tempOrder.getShippingFees()));
+                    user.setBalance(user.getBalance() - (order.getTotalPrice() + order.getShippingFees()));
                   
                 }
 
@@ -108,6 +123,29 @@ public class OrderServiceImpl implements OrderService{
         } catch (Exception e) {
             System.out.println("Exception in shipOrder as" + e.getMessage());
         }
+    }
+
+    private boolean payForEachOrder(ComponentOrder order) {
+        for (ComponentOrder co : ((Order)order).getComponents()) {
+            Order o = (Order) co;
+            if (users.get(o.getOwner()).getBalance() < o.getTotalPrice()) {
+                return false;
+            }
+            // TODO: do we need to handle if the prodcut not anymoree in the stock ?
+        }
+        for (ComponentOrder co : ((Order)order).getComponents()) {
+            Order o = (Order) co;
+            User user = users.get(o.getOwner());
+            user.setBalance(user.getBalance() - o.getTotalPrice());
+
+            for (ComponentOrder pro : o.getComponents()) {
+                Product p = (Product) pro;
+                products.get(p.getSerialNumber()).setStock(products.get(p.getSerialNumber()).getStock() - 1);
+            }
+
+        }
+
+        return true;
     }
 
     @Override
@@ -147,6 +185,7 @@ public class OrderServiceImpl implements OrderService{
     public Boolean addProductToOrder(User user, String productID, int quantity, String username) {
         try {
             if (users.get(username) == null){
+                System.out.println("baby baby " + username);
                 return false;
             }
             if (products.get(productID) == null){
@@ -155,7 +194,6 @@ public class OrderServiceImpl implements OrderService{
             if(products.get(productID).getStock() < quantity){
                 return false;
             }
-            
             
             Order userOrders = (Order) user.getOrder();// 1 order
             for (ComponentOrder order : userOrders.getComponents()) {
@@ -168,7 +206,8 @@ public class OrderServiceImpl implements OrderService{
             }
 
             // first time you order for specific username (yourself, others)
-            Order currentOrder = new Order(orders.size(), (username.equals(user.getUsername()))?"simple":"compound", username);
+            // Order currentOrder = new Order(orders.size(), (username.equals(user.getUsername()))?"simple":"compound", username);
+            Order currentOrder = new Order(orders.size(), "simple", username);
             currentOrder.setTotalPrice(products.get(productID).getPrice()*quantity + currentOrder.getTotalPrice());
             currentOrder.addComponent(products.get(productID));
             userOrders.addComponent(currentOrder);

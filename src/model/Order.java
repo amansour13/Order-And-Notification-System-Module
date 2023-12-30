@@ -8,12 +8,12 @@ public class Order implements ComponentOrder {
     private int ID;
     private LocalDate timeShip;
     private ArrayList<ComponentOrder> components = new ArrayList<>();
-    private Double shippingFees=0.0;
+    private Double shippingFees= 0.0;
     private String orderType;
     private String owner;
     private String status;
     private Double totalPrice = 0.0;
-    
+
     public Double getTotalPrice() {
         return totalPrice;
     }
@@ -101,18 +101,22 @@ public class Order implements ComponentOrder {
 
     @Override
     public String toString() {
-        String result = ID + "\n";
+        String result = "ID: " + ID + "\n";
+        result += "Owner: " + owner + "\n";
         // result += timeShip + "\n";
         if (orderType.equals("simple")) {
+            result += "total price: " + totalPrice + "\n";
             for (ComponentOrder componentOrder : components) {
                 result += componentOrder.toString();
                 result += "\n----------------------------\n";
             }
         }
         else if (orderType.equals("compound")) {
+            result += "Status: " +  status + "\n";
             for (ComponentOrder componentOrder : components) {
                 Order tempOrder = (Order) componentOrder;
-                result += tempOrder.ID + "\n";
+                // result += tempOrder.ID + "\n";
+                componentOrder.toString();
                 for (ComponentOrder tempComponenOrder : tempOrder.components) {
                     result += tempComponenOrder.toString();
                     result += "\n----------------------------\n";
