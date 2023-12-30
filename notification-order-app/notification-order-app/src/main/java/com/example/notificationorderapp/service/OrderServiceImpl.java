@@ -3,6 +3,7 @@ package com.example.notificationorderapp.service;
 import com.example.notificationorderapp.Channels.ChannelStrategy;
 import com.example.notificationorderapp.Channels.Email;
 import com.example.notificationorderapp.Channels.SMS;
+
 import com.example.notificationorderapp.model.ComponentOrder;
 import com.example.notificationorderapp.model.Order;
 import com.example.notificationorderapp.model.Product;
@@ -21,9 +22,12 @@ import static com.example.notificationorderapp.util.Database.notificationsQueue;
 
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
-import javax.swing.border.CompoundBorder;
 
 public class OrderServiceImpl implements OrderService{
     
@@ -57,7 +61,7 @@ public class OrderServiceImpl implements OrderService{
                     notification.setChannel((ChannelStrategy)channel);
                     notification.getChannel().send(u);
                     System.out.println(notification.getMessage().getContent());
-                    notificationsQueue.add(notification);
+                    addToNotificationsQueue(notification);
                 }
                 stats.placeTempCounter++;
             }
@@ -83,7 +87,6 @@ public class OrderServiceImpl implements OrderService{
                 order.setStatus("shipped");
                 order.setTimeShip(LocalDate.now());
                 orders.put(order.getID(), order);
-                
                 Notification notification = new Notification();
                 MessageTemplate message = new Shipment();
                 Class<?> clazz = Class.forName(className); //TODO: not experimented yet 
@@ -96,7 +99,7 @@ public class OrderServiceImpl implements OrderService{
                     notification.setChannel((ChannelStrategy)channel);
                     notification.getChannel().send(u);
                     System.out.println(notification.getMessage().getContent());
-                    notificationsQueue.add(notification);
+                    addToNotificationsQueue(notification);
                 }                    
                 stats.shipTempCounter++;
                 user.setOrder(null);
@@ -241,7 +244,21 @@ public class OrderServiceImpl implements OrderService{
         notification.setMessage(message);
         notification.setChannel((ChannelStrategy)channel);
         notification.getChannel().send(user);
-        notificationsQueue.add(notification);
+        addToNotificationsQueue(notification);
         stats.cancelTempCounter+=1;
+    }
+
+     private void addToNotificationsQueue(Notification notification){
+          notificationsQueue.add(notification);
+         long delay = 2;
+         long delayInNanos = TimeUnit.MINUTES.toNanos(delay);
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        LocalDateTime scheduledTime = LocalDateTime.now().plusNanos(TimeUnit.NANOSECONDS.toNanos(delayInNanos));
+        scheduler.schedule(() -> {
+            
+            notificationsQueue.remove(notification);
+            
+        }, LocalDateTime.now().until(scheduledTime, ChronoUnit.NANOS), TimeUnit.NANOSECONDS);
+      
     }
 }

@@ -120,7 +120,7 @@ public class OrderController {
         return new ResponseEntity<>(result, HttpStatus.CONFLICT);
     }
 
-        @PostMapping("/cancel")
+    @PostMapping("/cancel")
     public ResponseEntity<String> cancelorder(@RequestBody LoginValidator loginValidator) {
         OrderService orderService = new OrderServiceImpl();
         
