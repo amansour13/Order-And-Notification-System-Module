@@ -39,7 +39,7 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public void placeOrder(User user,String className) {
+    public boolean placeOrder(User user, String className) {
         try {
             Order order = (Order) user.getOrder();
             if (!order.getStatus().equals("placed")){
@@ -47,17 +47,8 @@ public class OrderServiceImpl implements OrderService{
                  
                 Notification notification = new Notification();
                 MessageTemplate message = new Placement();
-                // ChannelStrategy channel;
-                // if(className=="SMS"){
-                //     channel = new SMS();
-                // }
-                // else{
-                //     channel = new Email();
-                // }
-                // tempOrder.setOrderType("simple"); //test
                 Class<?> clazz = Class.forName(className); //TODO: not experimented yet 
                 Object channel =  clazz.getDeclaredConstructor().newInstance();
-
 
                 for (ComponentOrder o : order.getComponents()) {
                     User u = users.get(((Order) o).getOwner());
@@ -70,21 +61,23 @@ public class OrderServiceImpl implements OrderService{
                 }
                 stats.placeTempCounter++;
             }
+            return true;
             
         } catch (Exception e) {
             System.out.println("Exception in placeOrder as" + e.getMessage());
+            return false;
         }
     }
 
     @Override
-    public void shipOrder(User user, String className) {
+    public String shipOrder(User user, String className) {
        try {
             Order order = (Order) user.getOrder();
 
-            if (!order.getStatus().equals("shipped")){
-                if (!payForEachOrder(order)) {
-                    System.out.println("Can't pay, balance not enough");
-                    return;
+            if (order.getStatus().equals("placed")){
+                String paidStatus = payForEachOrder(order);
+                if (paidStatus!= "success") {
+                    return paidStatus;
                 }
 
                 order.setStatus("shipped");
@@ -93,14 +86,6 @@ public class OrderServiceImpl implements OrderService{
                 
                 Notification notification = new Notification();
                 MessageTemplate message = new Shipment();
-                // ChannelStrategy channel;
-                //  if(className=="SMS"){
-                //     channel = new SMS();
-                // }
-                // else{
-                //     channel = new Email();
-                // }
-                //   order.setOrderType("simple"); //test
                 Class<?> clazz = Class.forName(className); //TODO: not experimented yet 
                 Object channel =  clazz.getDeclaredConstructor().newInstance();
 
@@ -114,24 +99,28 @@ public class OrderServiceImpl implements OrderService{
                     notificationsQueue.add(notification);
                 }                    
                 stats.shipTempCounter++;
+                return "success";
+            } else {
+                return  "order not placed";
             }
         } catch (Exception e) {
             System.out.println("Exception in shipOrder as" + e.getMessage());
+            return "failed";
         }
     }
 
-    private boolean payForEachOrder(ComponentOrder order) {
+    private String payForEachOrder(ComponentOrder order) {
         double feeForEach = ((Order)order).getShippingFees() / ((Order)order).getComponents().size();
 
         for (ComponentOrder co : ((Order)order).getComponents()) {
             Order o = (Order) co;
             if (users.get(o.getOwner()).getBalance() < o.getTotalPrice() + feeForEach) {
-                return false;
+                return "Not enough money, for user: " + users.get(o.getOwner()).getUsername();
             }
             for (ComponentOrder pro : o.getComponents()) {
                 Product p = (Product) pro;
                 if(p.getStock() > products.get(p.getSerialNumber()).getStock() ) {
-                    return false;
+                    return "Not enough stock, for prodcut: " + products.get(p.getSerialNumber()).getName() + " stock: " +products.get(p.getSerialNumber()).getStock() + " desired quantity: " + p.getStock();
                 }
             }
         }
@@ -147,7 +136,7 @@ public class OrderServiceImpl implements OrderService{
 
         }
 
-        return true;
+        return "success";
     }
 
     @Override

@@ -72,4 +72,52 @@ public class OrderController {
 
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
+
+    @PostMapping("/place")
+    public ResponseEntity<String> placeOrder(@RequestBody LoginValidator loginValidator) {
+        OrderService orderService = new OrderServiceImpl();
+
+        UserService userService = new UserServiceImpl();
+        User user = userService.getUser(loginValidator.getUsername(), loginValidator.getPassword());
+        if (user == null) {
+            return new ResponseEntity<>("Wrong information", HttpStatus.UNAUTHORIZED);
+        }
+
+        if (user.getOrder() == null) {
+            return new ResponseEntity<>("No order found", HttpStatus.NOT_FOUND);
+        }
+        // TODO: is this the best way to use sms channel ???
+        if (orderService.placeOrder(user, "com.example.notificationorderapp.Channels.SMS")) {
+            return new ResponseEntity<>("Order Placed Successfully", HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>("Order Failed", HttpStatus.CONFLICT);
+    }
+
+
+    @PostMapping("/ship")
+    public ResponseEntity<String> shiporder(@RequestBody LoginValidator loginValidator) {
+        OrderService orderService = new OrderServiceImpl();
+        
+        UserService userService = new UserServiceImpl();
+        User user = userService.getUser(loginValidator.getUsername(), loginValidator.getPassword());
+        if (user == null) {
+            return new ResponseEntity<>("Wrong information", HttpStatus.UNAUTHORIZED);
+        }
+        
+        if (user.getOrder() == null) {
+            return new ResponseEntity<>("No order found", HttpStatus.NOT_FOUND);
+        }
+        
+        System.out.println(user.getBalance());
+        // TODO: is this the best way to use sms channel ???
+        String result = orderService.shipOrder(user, "com.example.notificationorderapp.Channels.SMS");
+        System.out.println(user.getBalance());
+        if (result == "success") {
+            return new ResponseEntity<>("Order is shipped", HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(result, HttpStatus.CONFLICT);
+    }
+    
 }
