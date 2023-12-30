@@ -8,8 +8,6 @@ import com.example.notificationorderapp.util.Statistics.Pair;
 public class SMS extends ChannelStrategy {
     @Override
    public void send(User user) {
-        System.out.println("send to phone "+user.getPhone());
-
          boolean found = false;
 
         for (Pair pair : stats.phonesCounter) {

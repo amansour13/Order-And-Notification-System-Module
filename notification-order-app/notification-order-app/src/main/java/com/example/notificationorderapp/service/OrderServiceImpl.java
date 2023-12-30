@@ -27,6 +27,16 @@ import javax.swing.border.CompoundBorder;
 
 public class OrderServiceImpl implements OrderService{
     
+    @Override
+    public void createOrder(User user) {
+        try {
+            user.setOrder(new Order(orders.size(), "compound", user.getUsername()));
+            ((Order) user.getOrder()).setShippingFees(50.0);
+            orders.put(((Order) user.getOrder()).getID(), (Order) user.getOrder());
+        } catch (Exception e) {
+            System.out.println("Exception in createOrder as" + e.getMessage());
+        }
+    }
 
     @Override
     public void placeOrder(User user,String className) {
@@ -164,9 +174,9 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public ComponentOrder getOrder(User user) {
+    public ComponentOrder getOrder(int id) {
         try {
-            return user.getOrder();
+            return orders.get(id);
         } catch (Exception e) {
             System.out.println("Exception in getOrder as" + e.getMessage());
             return null;
@@ -174,17 +184,17 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public Boolean addProductToOrder(User user, String productID, int quantity, String username) {
+    // TODO: comapring strings, is not the best
+    public String addProductToOrder(User user, String productID, int quantity, String username) {
         try {
             if (users.get(username) == null){
-                System.out.println("baby baby " + username);
-                return false;
+                return "Owner doesn't exsist";
             }
             if (products.get(productID) == null){
-                return false;
+                return "Product doesn't exsist";
             }
             if(products.get(productID).getStock() < quantity){
-                return false;
+                return "Stock isn't enough";
             }
             
             Order userOrders = (Order) user.getOrder();// 1 order
@@ -195,7 +205,7 @@ public class OrderServiceImpl implements OrderService{
                     Product product = new Product(products.get(productID));
                     product.setStock(quantity);
                     tempOrder.addComponent(product);
-                    return true;
+                    return "success";
                 }
             }
 
@@ -210,11 +220,11 @@ public class OrderServiceImpl implements OrderService{
 
             userOrders.addComponent(currentOrder);
             user.setOrder(userOrders);
-            return true;
+            return "success";
 
         } catch (Exception e) {
             System.out.println("Exception in addProductToOrder as" + e.getMessage());
-            return false;
+            return "success";
         }
 
     }

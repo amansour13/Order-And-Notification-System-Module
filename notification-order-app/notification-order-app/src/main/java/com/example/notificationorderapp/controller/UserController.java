@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.notificationorderapp.model.User;
 import com.example.notificationorderapp.service.UserService;
 import com.example.notificationorderapp.service.UserServiceImpl;
-import com.example.notificationorderapp.validation.addBalanceValidator;
+import com.example.notificationorderapp.validation.AddBalanceValidator;
 import com.example.notificationorderapp.validation.LoginValidator;
 import com.example.notificationorderapp.validation.RegisterValidator;
 
@@ -46,19 +46,19 @@ public class UserController{
 
         User user = userService.getUser(loginRequest.getUsername(), loginRequest.getPassword());
         if (user == null) {
-            return new ResponseEntity<>("Wrong information", HttpStatus.CONFLICT);
+            return new ResponseEntity<>("Wrong information", HttpStatus.UNAUTHORIZED);
         }
 
         return new ResponseEntity<>("success", HttpStatus.OK);
     }
 
     @PostMapping("/addbalance")
-    public ResponseEntity<String> addBalance(@Valid @RequestBody addBalanceValidator addBalanceRequest) {
+    public ResponseEntity<String> addBalance(@Valid @RequestBody AddBalanceValidator addBalanceRequest) {
         UserService userService = new UserServiceImpl();
 
         User user = userService.getUser(addBalanceRequest.getUsername(), addBalanceRequest.getPassword());
         if (user == null) {
-            return new ResponseEntity<>("Wrong information", HttpStatus.CONFLICT);
+            return new ResponseEntity<>("Wrong information", HttpStatus.UNAUTHORIZED);
         }
         
         System.out.println(user.getBalance());

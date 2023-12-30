@@ -11,8 +11,9 @@ public interface OrderService {
     
     public void cancelOrder(User user, String orderID,String className);
 
-    public ComponentOrder getOrder(User user);
+    public ComponentOrder getOrder(int id);
 
-    public Boolean addProductToOrder(User user, String productID, int quantity, String username);
+    public String addProductToOrder(User user, String productID, int quantity, String username);
+    public void createOrder(User user);
 
 }

@@ -33,12 +33,8 @@ public class UserServiceImpl implements UserService {
         try {
             // user exist
             User user = users.get(username);
-            System.out.println(username + ", " + password);
-            System.out.println(user.getUsername()+ ", " + user.getPassword());
             if(user != null && user.getPassword().equals(password)){
-                user.setOrder(new Order(orders.size(), "compound", username));
-                user.setOrder(new Order(orders.size(), "none", user.getUsername()));
-                ((Order) user.getOrder()).setShippingFees(50.0);
+
                 return user;
             }
         } catch (Exception e) {

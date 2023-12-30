@@ -9,8 +9,6 @@ import com.example.notificationorderapp.util.Statistics.Pair;
 public class Email extends ChannelStrategy {
     @Override
    public void send(User user) {
-        System.out.println("send to email " + user.getEmail());
-
         boolean found = false;
 
         for (Pair pair : stats.emailsCounter) {
