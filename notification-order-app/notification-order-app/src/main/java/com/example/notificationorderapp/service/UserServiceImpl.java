@@ -6,6 +6,7 @@ import static com.example.notificationorderapp.util.Database.orders;
 import static com.example.notificationorderapp.util.Database.users;
 
 
+
 public class UserServiceImpl implements UserService {
 
     @Override
@@ -15,6 +16,7 @@ public class UserServiceImpl implements UserService {
             if(users.get(p.getUsername()) != null){
                 return false;
             }
+            
             // username doeasn't exist
             users.put(p.getUsername(), p);
             
