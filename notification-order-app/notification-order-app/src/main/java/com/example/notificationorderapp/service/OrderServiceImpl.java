@@ -99,6 +99,7 @@ public class OrderServiceImpl implements OrderService{
                     notificationsQueue.add(notification);
                 }                    
                 stats.shipTempCounter++;
+                user.setOrder(null);
                 return "success";
             } else {
                 return  "order not placed";
