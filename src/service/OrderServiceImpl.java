@@ -102,22 +102,7 @@ public class OrderServiceImpl implements OrderService{
                     notification.getChannel().send(u);
                     System.out.println(notification.getMessage().getContent());
                     notificationsQueue.add(notification);
-                }
-                
-
-                
-                // Deduct the fees and order price from the simple order
-                if(user.getBalance() >= (order.getTotalPrice() + order.getShippingFees())){
-                    // TODO: update the stock of each product
-                    // products.get(tempOrder.getID()).setStock(products.get(tempOrder.getID()).getStock() + );;
-                    user.setBalance(user.getBalance() - (order.getTotalPrice() + order.getShippingFees()));
-                  
-                }
-
-                // TODO : Deduct the fees and order price in case of compound orders
-                //user.setBalance(user.getBalance() - tempOrder.getTotalPrice());
-                    
-                    
+                }                    
                 stats.shipTempCounter++;
             }
         } catch (Exception e) {
@@ -126,21 +111,28 @@ public class OrderServiceImpl implements OrderService{
     }
 
     private boolean payForEachOrder(ComponentOrder order) {
+        double feeForEach = ((Order)order).getShippingFees() / ((Order)order).getComponents().size();
+
         for (ComponentOrder co : ((Order)order).getComponents()) {
             Order o = (Order) co;
-            if (users.get(o.getOwner()).getBalance() < o.getTotalPrice()) {
+            if (users.get(o.getOwner()).getBalance() < o.getTotalPrice() + feeForEach) {
                 return false;
             }
-            // TODO: do we need to handle if the prodcut not anymoree in the stock ?
+            for (ComponentOrder pro : o.getComponents()) {
+                Product p = (Product) pro;
+                if(p.getStock() > products.get(p.getSerialNumber()).getStock() ) {
+                    return false;
+                }
+            }
         }
         for (ComponentOrder co : ((Order)order).getComponents()) {
             Order o = (Order) co;
             User user = users.get(o.getOwner());
-            user.setBalance(user.getBalance() - o.getTotalPrice());
+            user.setBalance(user.getBalance() - o.getTotalPrice() - feeForEach);
 
             for (ComponentOrder pro : o.getComponents()) {
                 Product p = (Product) pro;
-                products.get(p.getSerialNumber()).setStock(products.get(p.getSerialNumber()).getStock() - 1);
+                products.get(p.getSerialNumber()).setStock(products.get(p.getSerialNumber()).getStock() - p.getStock());
             }
 
         }
@@ -200,7 +192,9 @@ public class OrderServiceImpl implements OrderService{
                 Order tempOrder = (Order) order;
                 if (tempOrder.getOwner().equals(username)){
                     tempOrder.setTotalPrice(products.get(productID).getPrice() * quantity + tempOrder.getTotalPrice());
-                    tempOrder.addComponent(products.get(productID));
+                    Product product = new Product(products.get(productID));
+                    product.setStock(quantity);
+                    tempOrder.addComponent(product);
                     return true;
                 }
             }
@@ -209,7 +203,11 @@ public class OrderServiceImpl implements OrderService{
             // Order currentOrder = new Order(orders.size(), (username.equals(user.getUsername()))?"simple":"compound", username);
             Order currentOrder = new Order(orders.size(), "simple", username);
             currentOrder.setTotalPrice(products.get(productID).getPrice()*quantity + currentOrder.getTotalPrice());
-            currentOrder.addComponent(products.get(productID));
+
+            Product product = new Product(products.get(productID));
+            product.setStock(quantity);
+            currentOrder.addComponent(product);
+
             userOrders.addComponent(currentOrder);
             user.setOrder(userOrders);
             return true;

@@ -17,6 +17,7 @@ public class UserServiceImpl implements UserService {
             }
             // username doeasn't exist
             p.setOrder(new Order(orders.size(), "none", p.getUsername()));
+            ((Order) p.getOrder()).setShippingFees(50.0);
             users.put(p.getUsername(), p);
             
         } catch (Exception e) {

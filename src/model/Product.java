@@ -6,6 +6,15 @@ public class Product implements ComponentOrder{
     private Category category;
     private Double price;
     private int stock;
+
+    public Product(Product other) {
+        this.serialNumber = other.serialNumber;
+        this.name = other.name;
+        this.vendor = other.vendor; 
+        this.category = other.category;
+        this.price = other.price;
+        this.stock = other.stock;
+    }
     
     public Product(String serialNumber, String name, String vendor, Category category, Double price, int stock) {
         this.serialNumber = serialNumber;
@@ -62,5 +71,15 @@ public class Product implements ComponentOrder{
     @Override
     public String toString() {
         return serialNumber+"::"+name+"::"+vendor+"::"+category.name()+"::"+Double.toString(price)+"::"+Integer.toString(stock);
+    }
+
+    @Override
+    public Product clone() {
+        try {
+            return (Product) super.clone();
+        } catch (CloneNotSupportedException e) {
+            // This should not happen since Person implements Cloneable
+            throw new AssertionError();
+        }
     }
 }

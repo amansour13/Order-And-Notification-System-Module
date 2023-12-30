@@ -34,11 +34,14 @@ public class Main {
 
         // personServiceImpl.addPerson(p2);
         OrderService orderService = new OrderServiceImpl();
-        orderService.addProductToOrder(p1,"0133142",1,"k");
-        orderService.addProductToOrder(p1,"0133143",1,"k");
+        orderService.addProductToOrder(p1,"0133142", 1,"k");
+        orderService.addProductToOrder(p1,"0133143",2,"k");
         orderService.addProductToOrder(p1,"0133142",1,"j");
         orderService.addProductToOrder(p1,"0133143",1,"j");
 //        System.out.println(p1.getOrder().toString());
+
+        Database.products.get("0133142").setStock(0);
+
         orderService.placeOrder(p1,"src.Channels.SMS");
         orderService.shipOrder(p1,"src.Channels.SMS");
 
