@@ -143,7 +143,7 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public ResponseEntity<String> cancelOrder(User user , ChannelStrategy channel, String orderId) {
-        try {
+//        try {
             Order order = (Order)orders.get(Integer.parseInt(orderId));
             if (order == null || !order.getOwner().equals(user.getUsername())) {
                 return new ResponseEntity<>("Not found", HttpStatus.NOT_FOUND);
@@ -179,10 +179,10 @@ public class OrderServiceImpl implements OrderService{
 
             return new ResponseEntity<>("Couldn't cancel, the order is not placed nor shipped", HttpStatus.CONFLICT);
             
-        } catch (Exception e) {
-            System.out.println("Exception in cancelOrder as" + e.getMessage());
-            return new ResponseEntity<>("Internal Error", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+//        } catch (Exception e) {
+//            System.out.println("Exception in cancelOrder as" + e.getMessage());
+//            return new ResponseEntity<>("Internal Error", HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
     }
 
     @Override

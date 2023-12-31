@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping("/order")
 public class OrderController {
 
-    private OrderService orderService = new OrderServiceImpl();
+    OrderService orderService = new OrderServiceImpl();
 
     private UserService userService = new UserServiceImpl();
 
@@ -102,7 +102,7 @@ public class OrderController {
     }
 
     @PostMapping("/cancel/{id}")
-    public ResponseEntity<String> cancelorder(@Valid @RequestBody NotificationValidator notificationValidator, @PathVariable String id) {
+    public ResponseEntity<String> cancelorder(@Valid @RequestBody NotificationValidator notificationValidator, @PathVariable("id") String id) {
         User user = userService.getUser(notificationValidator.getUsername(), notificationValidator.getPassword());
         if (user == null) {
             return new ResponseEntity<>("Username or password is incorrect", HttpStatus.UNAUTHORIZED);
