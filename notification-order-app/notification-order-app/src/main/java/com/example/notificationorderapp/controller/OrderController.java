@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.notificationorderapp.Channels.SMS;
 import com.example.notificationorderapp.model.Order;
 import com.example.notificationorderapp.model.Product;
 import com.example.notificationorderapp.model.User;
@@ -38,26 +39,18 @@ public class OrderController {
         UserService userService = new UserServiceImpl();
         User user = userService.getUser(addProductRequest.getUsername(), addProductRequest.getPassword());
         if (user == null) {
-            return new ResponseEntity<>("Wrong information", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("Username or password is incorrect", HttpStatus.UNAUTHORIZED);
         }
 
         if (user.getOrder() == null) {
             orderService.createOrder(user);
         }
 
-        String message = orderService.addProductToOrder(
+        return orderService.addProductToOrder(
             user, 
             addProductRequest.getProductId(),
             addProductRequest.getQuantity(),
             addProductRequest.getOwner());
-
-        if (message == "success") {
-            message = "Added Successfully Order id: " + ((Order)user.getOrder()).getID();
-            return new ResponseEntity<>(message, HttpStatus.OK);
-        }
-
-        return new ResponseEntity<>(message, HttpStatus.CONFLICT);
-
     }
 
     @GetMapping("/get/{id}")
@@ -80,18 +73,14 @@ public class OrderController {
         UserService userService = new UserServiceImpl();
         User user = userService.getUser(loginValidator.getUsername(), loginValidator.getPassword());
         if (user == null) {
-            return new ResponseEntity<>("Wrong information", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("Username or password is incorrect", HttpStatus.UNAUTHORIZED);
         }
 
         if (user.getOrder() == null) {
             return new ResponseEntity<>("No order found", HttpStatus.NOT_FOUND);
         }
-        // TODO: is this the best way to use sms channel ???
-        if (orderService.placeOrder(user, "com.example.notificationorderapp.Channels.SMS")) {
-            return new ResponseEntity<>("Order Placed Successfully", HttpStatus.OK);
-        }
 
-        return new ResponseEntity<>("Order Failed", HttpStatus.CONFLICT);
+        return orderService.placeOrder(user, new SMS()) ;
     }
 
 
@@ -102,7 +91,7 @@ public class OrderController {
         UserService userService = new UserServiceImpl();
         User user = userService.getUser(loginValidator.getUsername(), loginValidator.getPassword());
         if (user == null) {
-            return new ResponseEntity<>("Wrong information", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("Username or password is incorrect", HttpStatus.UNAUTHORIZED);
         }
         
         if (user.getOrder() == null) {
@@ -111,38 +100,20 @@ public class OrderController {
         
         System.out.println(user.getBalance());
         // TODO: is this the best way to use sms channel ???
-        String result = orderService.shipOrder(user, "com.example.notificationorderapp.Channels.SMS");
-        System.out.println(user.getBalance());
-        if (result == "success") {
-            return new ResponseEntity<>("Order is shipped", HttpStatus.OK);
-        }
-
-        return new ResponseEntity<>(result, HttpStatus.CONFLICT);
+        return orderService.shipOrder(user, new SMS());
     }
 
-    @PostMapping("/cancel")
-    public ResponseEntity<String> cancelorder(@RequestBody LoginValidator loginValidator) {
+    @PostMapping("/cancel/{id}")
+    public ResponseEntity<String> cancelorder(@RequestBody LoginValidator loginValidator, @PathVariable String id) {
         OrderService orderService = new OrderServiceImpl();
         
         UserService userService = new UserServiceImpl();
         User user = userService.getUser(loginValidator.getUsername(), loginValidator.getPassword());
         if (user == null) {
-            return new ResponseEntity<>("Wrong information", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("Username or password is incorrect", HttpStatus.UNAUTHORIZED);
         }
         
-        if (user.getOrder() == null) {
-            return new ResponseEntity<>("No order found", HttpStatus.NOT_FOUND);
-        }
-        
-        System.out.println(user.getBalance());
-        // TODO: is this the best way to use sms channel ???
-        String result = orderService.cancelOrder(user, "com.example.notificationorderapp.Channels.SMS");
-        System.out.println(user.getBalance());
-        if (result == "success") {
-            return new ResponseEntity<>("Order is cancelled", HttpStatus.OK);
-        }
-
-        return new ResponseEntity<>(result, HttpStatus.CONFLICT);
+        return orderService.cancelOrder(user, new SMS(), id);
     }
     
 }

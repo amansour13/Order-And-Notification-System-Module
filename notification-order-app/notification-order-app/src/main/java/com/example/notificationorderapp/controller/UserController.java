@@ -46,7 +46,7 @@ public class UserController{
 
         User user = userService.getUser(loginRequest.getUsername(), loginRequest.getPassword());
         if (user == null) {
-            return new ResponseEntity<>("Wrong information", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("Username or password is incorrect", HttpStatus.UNAUTHORIZED);
         }
 
         return new ResponseEntity<>("success", HttpStatus.OK);
@@ -58,12 +58,12 @@ public class UserController{
 
         User user = userService.getUser(addBalanceRequest.getUsername(), addBalanceRequest.getPassword());
         if (user == null) {
-            return new ResponseEntity<>("Wrong information", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("Username or password is incorrect", HttpStatus.UNAUTHORIZED);
         }
         
         System.out.println(user.getBalance());
         if (!userService.addBalance(user, addBalanceRequest.getAmount())) {
-            return new ResponseEntity<>("Wrong information", HttpStatus.CONFLICT);
+            return new ResponseEntity<>("Username or password is incorrect", HttpStatus.CONFLICT);
         }
         System.out.println(user.getBalance());
 
