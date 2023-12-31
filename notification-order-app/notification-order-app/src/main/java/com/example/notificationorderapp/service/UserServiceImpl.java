@@ -32,7 +32,6 @@ public class UserServiceImpl implements UserService {
             // user exist
             User user = users.get(username);
             if(user != null && user.getPassword().equals(password)){
-
                 return user;
             }
         } catch (Exception e) {

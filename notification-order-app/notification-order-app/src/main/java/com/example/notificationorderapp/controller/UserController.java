@@ -59,6 +59,7 @@ public class UserController{
             return new ResponseEntity<>("Username or password is incorrect", HttpStatus.UNAUTHORIZED);
         }
 
+        user.setIsLogged(true);
         return new ResponseEntity<>("success", HttpStatus.OK);
     }
 
@@ -83,7 +84,7 @@ public class UserController{
         User user = userService.getUser(loginValidator.getUsername(), loginValidator.getPassword());
         if (user == null) {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
-        } 
+        }
         return new ResponseEntity<>(user, HttpStatus.UNAUTHORIZED);
     }
 }

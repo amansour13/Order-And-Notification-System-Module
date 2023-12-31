@@ -42,6 +42,9 @@ public class OrderServiceImpl implements OrderService{
     public ResponseEntity<String> placeOrder(User user, ChannelStrategy channel, ILangauge langauge) {
         try {
             Order order = (Order) user.getOrder();
+            if (!user.getIsLogged()){
+                return new ResponseEntity<>("User didn't log in, please login and try again.", HttpStatus.CONFLICT);
+            }
             if (order.getStatus().equals("placed")) {
                 return new ResponseEntity<>("Order is already placed", HttpStatus.CONFLICT);
             }
@@ -82,7 +85,9 @@ public class OrderServiceImpl implements OrderService{
     public ResponseEntity<String> shipOrder(User user, ChannelStrategy channel, ILangauge langauge) {
        try {
             Order order = (Order) user.getOrder();
-
+            if (!user.getIsLogged()){
+                return new ResponseEntity<>("User didn't log in, please login and try again.", HttpStatus.CONFLICT);
+            }
             if (order.getStatus().equals("placed")){
                 // pay shipping fees
                 ResponseEntity<String> paidStatus = payForEachOrderShipFee(order);
@@ -170,7 +175,9 @@ public class OrderServiceImpl implements OrderService{
             if (order == null || !order.getOwner().equals(user.getUsername())) {
                 return new ResponseEntity<>("Not found", HttpStatus.NOT_FOUND);
             }
-
+            if (!user.getIsLogged()){
+                return new ResponseEntity<>("User didn't log in, please login and try again.", HttpStatus.CONFLICT);
+            }
             if (order.getStatus().equals("cancelled")) {
                 return new ResponseEntity<>("Order is already cancelled", HttpStatus.CONFLICT);
             }
@@ -254,12 +261,14 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    // TODO: comapring strings, is not the best
     public ResponseEntity<String> addProductToOrder(User user, String productID, int quantity, String username) {
         try {
             User owner = users.get(username);
             if (owner == null){
                 return new ResponseEntity<>("Owner doesn't exsist", HttpStatus.CONFLICT);
+            }
+            if (!user.getIsLogged()){
+                return new ResponseEntity<>("User didn't log in, please login and try again.", HttpStatus.CONFLICT);
             }
             if (products.get(productID) == null){
                 return new ResponseEntity<>("Product doesn't exsist", HttpStatus.CONFLICT);

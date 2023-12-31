@@ -9,7 +9,8 @@ public class User {
 	private Locations nearByLoc;
 	private ComponentOrder order;
 	private Double balance = 0.0;
-
+	private Boolean isLogged = false;
+	
 	public User() {}
 	public User(String username, String email, String password, String phone, String location, Double balance, Locations nearByLocation) {
 		this.email = email;
@@ -19,6 +20,13 @@ public class User {
 		this.location = location;
 		this.balance = balance;
 		this.nearByLoc = nearByLocation;
+		this.isLogged = false;
+	}
+	public Boolean getIsLogged() {
+		return isLogged;
+	}
+	public void setIsLogged(Boolean isLogged) {
+		this.isLogged = isLogged;
 	}
 	
 	public ComponentOrder getOrder() {
