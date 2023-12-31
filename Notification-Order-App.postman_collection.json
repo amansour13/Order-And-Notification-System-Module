@@ -80,6 +80,27 @@
 						"url": "{{baseUrl}}/login"
 					},
 					"response": []
+				},
+				{
+					"name": "gett user",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"seno\",\r\n    \"password\": \"thisisanother\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/get/user"
+					},
+					"response": []
 				}
 			]
 		},
