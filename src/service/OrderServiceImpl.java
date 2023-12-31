@@ -1,8 +1,6 @@
 package src.service;
 
 import src.Channels.ChannelStrategy;
-import src.Channels.Email;
-import src.Channels.SMS;
 import src.model.ComponentOrder;
 import src.model.Order;
 import src.model.Product;
@@ -23,7 +21,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
-import javax.swing.border.CompoundBorder;
 
 public class OrderServiceImpl implements OrderService{
     

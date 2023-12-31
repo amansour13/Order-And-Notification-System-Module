@@ -3,8 +3,6 @@ package src.Channels;
 import static src.util.Database.stats;
 
 import src.model.User;
-import src.util.Database;
-import src.util.Statistics;
 import src.util.Statistics.Pair;
 public class Email extends ChannelStrategy {
     @Override

@@ -1,7 +1,6 @@
 package src.main;
 
 import src.model.Category;
-import src.model.Loc;
 import src.model.Product;
 import src.model.User;
 import src.service.OrderService;
@@ -12,7 +11,6 @@ import src.service.StatisticsService;
 import src.service.StatisticsServiceImpl;
 import src.service.UserServiceImpl;
 import src.util.Database;
-import src.util.Statistics;
 
 public class Main {
     public static void main(String[] args) {
