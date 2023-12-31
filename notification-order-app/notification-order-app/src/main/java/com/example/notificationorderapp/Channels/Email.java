@@ -4,8 +4,6 @@ import static com.example.notificationorderapp.util.Database.stats;
 
 import com.example.notificationorderapp.model.Notification;
 import com.example.notificationorderapp.model.User;
-import com.example.notificationorderapp.util.Database;
-import com.example.notificationorderapp.util.Statistics;
 import com.example.notificationorderapp.util.Statistics.Pair;
 public class Email extends ChannelStrategy {
     @Override

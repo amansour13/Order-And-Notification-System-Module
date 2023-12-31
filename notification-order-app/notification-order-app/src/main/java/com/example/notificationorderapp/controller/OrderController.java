@@ -1,25 +1,18 @@
 package com.example.notificationorderapp.controller;
 
-import java.util.ArrayList;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.notificationorderapp.Channels.ChannelStrategy;
-import com.example.notificationorderapp.Channels.SMS;
 import com.example.notificationorderapp.model.Order;
-import com.example.notificationorderapp.model.Product;
 import com.example.notificationorderapp.model.User;
 import com.example.notificationorderapp.service.OrderService;
 import com.example.notificationorderapp.service.OrderServiceImpl;
-import com.example.notificationorderapp.service.ProductService;
-import com.example.notificationorderapp.service.ProductServiceImpl;
 import com.example.notificationorderapp.service.UserService;
 import com.example.notificationorderapp.service.UserServiceImpl;
 import com.example.notificationorderapp.validation.AddProductValidator;
-import com.example.notificationorderapp.validation.LoginValidator;
 import com.example.notificationorderapp.validation.NotificationValidator;
 
 import jakarta.validation.Valid;
@@ -28,7 +21,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 
 @RestController
@@ -64,7 +56,6 @@ public class OrderController {
         if (order == null) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-        System.out.println(order.toString());
 
         return new ResponseEntity<>(order, HttpStatus.OK);
     }

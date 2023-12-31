@@ -2,7 +2,7 @@ package com.example.notificationorderapp.validation;
 
 import jakarta.validation.constraints.*;
 
-public class LoginValidator {
+public class LoginValidator  {
 
     @NotBlank(message = "The username is required.")
     @Size(min = 3, max = 20, message = "The username must be from 3 to 20 characters.")

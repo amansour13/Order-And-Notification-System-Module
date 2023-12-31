@@ -28,7 +28,6 @@ public class ProductController {
 
     @GetMapping("/products/{id}")
     public ResponseEntity<Product> getProduct(@PathVariable("id") String id) {
-        System.out.println(id);
         ProductService productService = new ProductServiceImpl();
         Product product = productService.getProduct(id);
         if (product == null) {

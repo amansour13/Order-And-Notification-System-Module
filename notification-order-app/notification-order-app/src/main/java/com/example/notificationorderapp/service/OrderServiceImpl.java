@@ -1,13 +1,10 @@
 package com.example.notificationorderapp.service;
 
 import com.example.notificationorderapp.Channels.ChannelStrategy;
-import com.example.notificationorderapp.Channels.Email;
-import com.example.notificationorderapp.Channels.SMS;
 
 import com.example.notificationorderapp.model.ComponentOrder;
 import com.example.notificationorderapp.model.Order;
 import com.example.notificationorderapp.model.Product;
-import com.example.notificationorderapp.model.Response;
 import com.example.notificationorderapp.model.User;
 import com.example.notificationorderapp.model.Messages.Cancellation;
 import com.example.notificationorderapp.model.Messages.MessageTemplate;
@@ -21,15 +18,8 @@ import static com.example.notificationorderapp.util.Database.users;
 import static com.example.notificationorderapp.util.Database.stats;
 import static com.example.notificationorderapp.util.Database.notificationsQueue;
 
-import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
-import javax.net.ssl.HttpsURLConnection;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
