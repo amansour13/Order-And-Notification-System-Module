@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.notificationorderapp.model.Locations;
 import com.example.notificationorderapp.model.User;
 import com.example.notificationorderapp.service.UserService;
 import com.example.notificationorderapp.service.UserServiceImpl;
@@ -22,13 +23,20 @@ public class UserController{
 
     @PostMapping("/register")
     public ResponseEntity<String> regsiter(@Valid @RequestBody RegisterValidator signUpRequest) {
+        Locations nearby = signUpRequest.getNearByLocation();
+
+        if (nearby == null) {
+            return new ResponseEntity<>("Unsupported location", HttpStatus.CONFLICT);
+        }
+
         User user = new User(
             signUpRequest.getUsername(),
             signUpRequest.getEmail(),
             signUpRequest.getPassword(),
             signUpRequest.getPhone(),
             signUpRequest.getLocation(),
-            signUpRequest.getBalance()
+            signUpRequest.getBalance(),
+            nearby
         );
 
         UserService UserService = new UserServiceImpl();

@@ -1,5 +1,7 @@
 package com.example.notificationorderapp.validation;
 
+import com.example.notificationorderapp.model.Locations;
+
 import jakarta.validation.constraints.*;
 
 public class RegisterValidator {
@@ -24,8 +26,20 @@ public class RegisterValidator {
     @NotNull(message = "The location is required.")
     private String location;
 
+    @NotNull(message = "The near by location is required.")
+    private String nearByLocation;
+
     @NotNull(message = "The balance is required.")
     private double balance;
+
+    public Locations getNearByLocation() {
+        try {
+            return Enum.valueOf(Locations.class, nearByLocation.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+        
+    }
 
     public double getBalance() {
         return balance;

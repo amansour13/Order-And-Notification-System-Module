@@ -6,19 +6,20 @@ public class User {
 	private String username;
 	private String password;
 	private String location;
-	private Loc nearByLoc;
+	private Locations nearByLoc;
 	private ComponentOrder order;
 	private Double balance = 0.0;
 	private boolean isLogged;
 
 	public User() {}
-	public User(String username, String email, String password, String phone, String location, Double balance) {
+	public User(String username, String email, String password, String phone, String location, Double balance, Locations nearByLocation) {
 		this.email = email;
 		this.phone = phone;
 		this.username = username;
 		this.password = password;
 		this.location = location;
 		this.balance = balance;
+		this.nearByLoc = nearByLocation;
 	}
 	
 	public ComponentOrder getOrder() {
@@ -59,10 +60,10 @@ public class User {
 	public void setLocation(String location) {
 		this.location = location;
 	}
-	public Loc getNearByLoc() {
+	public Locations getNearByLoc() {
 		return nearByLoc;
 	}
-	public void setNearByLoc(Loc nearByLoc) {
+	public void setNearByLoc(Locations nearByLoc) {
 		this.nearByLoc = nearByLoc;
 	}
 	public Double getBalance() {

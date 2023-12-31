@@ -217,14 +217,18 @@ public class OrderServiceImpl implements OrderService{
     // TODO: comapring strings, is not the best
     public ResponseEntity<String> addProductToOrder(User user, String productID, int quantity, String username) {
         try {
-            if (users.get(username) == null){
+            User owner = users.get(username);
+            if (owner == null){
                 return new ResponseEntity<>("Owner doesn't exsist", HttpStatus.CONFLICT);
             }
             if (products.get(productID) == null){
                 return new ResponseEntity<>("Product doesn't exsist", HttpStatus.CONFLICT);
             }
-            if(products.get(productID).getStock() < quantity){
+            if (products.get(productID).getStock() < quantity){
                 return new ResponseEntity<>("Stock isn't enough", HttpStatus.CONFLICT);
+            }
+            if (user.getNearByLoc() != owner.getNearByLoc()) {
+                return new ResponseEntity<>("You cannot order to different nearby location", HttpStatus.CONFLICT);
             }
             
             Order userOrder = (Order) user.getOrder();// 1 order
