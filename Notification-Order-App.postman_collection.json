@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "23bf46f4-60e9-470e-8acd-f74f027770d2",
+		"_postman_id": "2125c6e3-1fe7-409f-8784-407a666c7411",
 		"name": "Notification-Order-App",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "31112953"
+		"_exporter_id": "28549426"
 	},
 	"item": [
 		{
@@ -65,6 +65,24 @@
 				},
 				{
 					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"seno\",\r\n    \"password\": \"thisisanother\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/login"
+					},
+					"response": []
+				},
+				{
+					"name": "getUser",
 					"request": {
 						"method": "POST",
 						"header": [],

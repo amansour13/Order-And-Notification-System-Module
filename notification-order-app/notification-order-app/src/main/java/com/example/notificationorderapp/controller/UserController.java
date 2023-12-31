@@ -1,7 +1,9 @@
 package com.example.notificationorderapp.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +22,10 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/")
 public class UserController{
+    
+    private UserService userService = new UserServiceImpl();
+
+    private UserService UserService = new UserServiceImpl();
 
     @PostMapping("/register")
     public ResponseEntity<String> regsiter(@Valid @RequestBody RegisterValidator signUpRequest) {
@@ -39,7 +45,6 @@ public class UserController{
             nearby
         );
 
-        UserService UserService = new UserServiceImpl();
         if (UserService.addUser(user)) {
             return new ResponseEntity<>("success", HttpStatus.OK);
         } else {
@@ -50,8 +55,6 @@ public class UserController{
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@Valid @RequestBody LoginValidator loginRequest) {
-        UserService userService = new UserServiceImpl();
-
         User user = userService.getUser(loginRequest.getUsername(), loginRequest.getPassword());
         if (user == null) {
             return new ResponseEntity<>("Username or password is incorrect", HttpStatus.UNAUTHORIZED);
@@ -62,7 +65,6 @@ public class UserController{
 
     @PostMapping("/addbalance")
     public ResponseEntity<String> addBalance(@Valid @RequestBody AddBalanceValidator addBalanceRequest) {
-        UserService userService = new UserServiceImpl();
 
         User user = userService.getUser(addBalanceRequest.getUsername(), addBalanceRequest.getPassword());
         if (user == null) {
@@ -75,5 +77,14 @@ public class UserController{
 
         return new ResponseEntity<>("success", HttpStatus.OK);
 
+    }
+
+    @GetMapping("/get/user")
+    public ResponseEntity<User> getUser(@Valid @RequestBody LoginValidator loginValidator){
+        User user = userService.getUser(loginValidator.getUsername(), loginValidator.getPassword());
+        if (user == null) {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        } 
+        return new ResponseEntity<>(user, HttpStatus.UNAUTHORIZED);
     }
 }

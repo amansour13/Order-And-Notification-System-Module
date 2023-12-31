@@ -9,7 +9,6 @@ public class User {
 	private Locations nearByLoc;
 	private ComponentOrder order;
 	private Double balance = 0.0;
-	private boolean isLogged;
 
 	public User() {}
 	public User(String username, String email, String password, String phone, String location, Double balance, Locations nearByLocation) {
@@ -71,12 +70,6 @@ public class User {
 	}
 	public void setBalance(Double balance) {
 		this.balance = balance;
-	}
-	public boolean isLogged() {
-		return isLogged;
-	}
-	public void setLogged(boolean isLogged) {
-		this.isLogged = isLogged;
 	}
 
 	@Override

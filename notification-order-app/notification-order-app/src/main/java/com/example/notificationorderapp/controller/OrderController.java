@@ -1,5 +1,6 @@
 package com.example.notificationorderapp.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,11 +28,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping("/order")
 public class OrderController {
 
+    private OrderService orderService = new OrderServiceImpl();
+
+    private UserService userService = new UserServiceImpl();
+
     @PostMapping("/add")
     public ResponseEntity<String> addProductToOrder(@Valid @RequestBody AddProductValidator addProductRequest) {
-        OrderService orderService = new OrderServiceImpl();
-
-        UserService userService = new UserServiceImpl();
         User user = userService.getUser(addProductRequest.getUsername(), addProductRequest.getPassword());
         if (user == null) {
             return new ResponseEntity<>("Username or password is incorrect", HttpStatus.UNAUTHORIZED);
@@ -50,7 +52,7 @@ public class OrderController {
 
     @GetMapping("/get/{id}")
     public ResponseEntity<Order> getOrder(@PathVariable("id") int id) {
-        OrderService orderService = new OrderServiceImpl();
+        
         Order order = (Order)orderService.getOrder(id);
         
         if (order == null) {
@@ -61,10 +63,7 @@ public class OrderController {
     }
 
     @PostMapping("/place")
-    public ResponseEntity<String> placeOrder(@Valid @RequestBody NotificationValidator notificationValidator) {
-        OrderService orderService = new OrderServiceImpl();
-
-        UserService userService = new UserServiceImpl();
+    public ResponseEntity<String> placeOrder(@Valid @RequestBody NotificationValidator notificationValidator) {        
         User user = userService.getUser(notificationValidator.getUsername(), notificationValidator.getPassword());
         if (user == null) {
             return new ResponseEntity<>("Username or password is incorrect", HttpStatus.UNAUTHORIZED);
@@ -85,9 +84,6 @@ public class OrderController {
 
     @PostMapping("/ship")
     public ResponseEntity<String> shiporder(@Valid @RequestBody NotificationValidator notificationValidator ) {
-        OrderService orderService = new OrderServiceImpl();
-        
-        UserService userService = new UserServiceImpl();
         User user = userService.getUser(notificationValidator.getUsername(), notificationValidator.getPassword());
         if (user == null) {
             return new ResponseEntity<>("Username or password is incorrect", HttpStatus.UNAUTHORIZED);
@@ -107,9 +103,6 @@ public class OrderController {
 
     @PostMapping("/cancel/{id}")
     public ResponseEntity<String> cancelorder(@Valid @RequestBody NotificationValidator notificationValidator, @PathVariable String id) {
-        OrderService orderService = new OrderServiceImpl();
-        
-        UserService userService = new UserServiceImpl();
         User user = userService.getUser(notificationValidator.getUsername(), notificationValidator.getPassword());
         if (user == null) {
             return new ResponseEntity<>("Username or password is incorrect", HttpStatus.UNAUTHORIZED);
