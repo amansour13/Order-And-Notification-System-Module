@@ -100,7 +100,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{baseUrl}}/products/222"
+						"url": "{{baseUrl}}/products/120"
 					},
 					"response": []
 				}
@@ -116,7 +116,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"mazen\", \r\n    \"password\": \"thisispass\", \r\n    \"productId\": \"222\",\r\n    \"quantity\": 1,\r\n    \"owner\": \"seno\"\r\n}",
+							"raw": "{\r\n    \"username\": \"mazen\", \r\n    \"password\": \"thisispass\", \r\n    \"productId\": \"112\",\r\n    \"quantity\": 1,\r\n    \"owner\": \"seno\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -134,7 +134,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"seno\", \r\n    \"password\": \"thisisanother\",\r\n    \"productId\": \"222\",\r\n    \"quantity\": 2,\r\n    \"owner\": \"seno\"\r\n}",
+							"raw": "{\r\n    \"username\": \"seno\", \r\n    \"password\": \"thisisanother\",\r\n    \"productId\": \"112\",\r\n    \"quantity\": 2,\r\n    \"owner\": \"seno\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
