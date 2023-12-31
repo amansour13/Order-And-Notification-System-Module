@@ -67,8 +67,7 @@ public class OrderServiceImpl implements OrderService{
                     message.createMessage(o, u);
                     notification.setMessage(message);
                     notification.setChannel(channel);
-                    notification.getChannel().send(u);
-                    System.out.println(notification.getMessage().getContent());
+                    notification.setUser(user);
                     addToNotificationsQueue(notification);
                     
                 }
@@ -107,8 +106,7 @@ public class OrderServiceImpl implements OrderService{
                     message.createMessage(o, u);
                     notification.setMessage(message);
                     notification.setChannel(channel);
-                    notification.getChannel().send(u);
-                    System.out.println(notification.getMessage().getContent());
+                    notification.setUser(user);
                     addToNotificationsQueue(notification);
                 }                    
                 stats.shipTempCounter++;
@@ -272,7 +270,7 @@ public class OrderServiceImpl implements OrderService{
     }
 
 
-    private void sendCancelNotify(User user, ChannelStrategy channel, Order userOrder) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException{
+    private void sendCancelNotify(User user, ChannelStrategy channel, Order userOrder) {
         userOrder.setStatus("cancelled");
         orders.put(userOrder.getID(), userOrder);
 
@@ -281,22 +279,22 @@ public class OrderServiceImpl implements OrderService{
         message.createMessage(userOrder, user);
         notification.setMessage(message);
         notification.setChannel(channel);
-        notification.getChannel().send(user);
+        notification.setUser(user);
         addToNotificationsQueue(notification);
         stats.cancelTempCounter+=1;
     }
 
      private void addToNotificationsQueue(Notification notification){
         notificationsQueue.add(notification);
-        long delay = 2;
-        long delayInNanos = TimeUnit.MINUTES.toNanos(delay);
-        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-        LocalDateTime scheduledTime = LocalDateTime.now().plusNanos(TimeUnit.NANOSECONDS.toNanos(delayInNanos));
-        scheduler.schedule(() -> {
+        // long delay = 2;
+        // long delayInNanos = TimeUnit.MINUTES.toNanos(delay);
+        // ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        // LocalDateTime scheduledTime = LocalDateTime.now().plusNanos(TimeUnit.NANOSECONDS.toNanos(delayInNanos));
+        // scheduler.schedule(() -> {
             
-            notificationsQueue.remove(notification);
+        //     notificationsQueue.remove(notification);
             
-        }, LocalDateTime.now().until(scheduledTime, ChronoUnit.NANOS), TimeUnit.NANOSECONDS);
+        // }, LocalDateTime.now().until(scheduledTime, ChronoUnit.NANOS), TimeUnit.NANOSECONDS);
       
     }
 }

@@ -15,37 +15,35 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/statistics")
 public class StatisticsController {
-    
-
-    @GetMapping("/phoneStatistics")
+    @GetMapping("/phone")
     public ResponseEntity<String> getMostNotifyPhone() {
         StatisticsService statisticsService = new StatisticsServiceImpl();
         String status = statisticsService.getMostNotifyPhone();
         if (status == null) {
-            return new ResponseEntity<>("not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("No statistics yet", HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
-    @GetMapping("/emailStatistics")
+    @GetMapping("/email")
     ResponseEntity<String> getMostNotifyEmail(){
        
         StatisticsService statisticsService = new StatisticsServiceImpl();
         String status = statisticsService.getMostNotifyEmail();
         if (status == null) {
-            return new ResponseEntity<>("not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("No statistics yet", HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
-     @GetMapping("/templateStatistics")
+     @GetMapping("/template")
     ResponseEntity<String> getMostNotifyTemp(){
         StatisticsService statisticsService = new StatisticsServiceImpl();
         String status = statisticsService.getMostNotifyTemp();
         if (status == null) {
-            return new ResponseEntity<>("not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("No statistics yet", HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(status, HttpStatus.OK);
     }

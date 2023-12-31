@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.notificationorderapp.Channels.ChannelStrategy;
 import com.example.notificationorderapp.Channels.SMS;
 import com.example.notificationorderapp.model.Order;
 import com.example.notificationorderapp.model.Product;
@@ -19,6 +20,7 @@ import com.example.notificationorderapp.service.UserService;
 import com.example.notificationorderapp.service.UserServiceImpl;
 import com.example.notificationorderapp.validation.AddProductValidator;
 import com.example.notificationorderapp.validation.LoginValidator;
+import com.example.notificationorderapp.validation.NotificationValidator;
 
 import jakarta.validation.Valid;
 
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 
 @RestController
@@ -67,11 +70,11 @@ public class OrderController {
     }
 
     @PostMapping("/place")
-    public ResponseEntity<String> placeOrder(@RequestBody LoginValidator loginValidator) {
+    public ResponseEntity<String> placeOrder(@Valid @RequestBody NotificationValidator notificationValidator) {
         OrderService orderService = new OrderServiceImpl();
 
         UserService userService = new UserServiceImpl();
-        User user = userService.getUser(loginValidator.getUsername(), loginValidator.getPassword());
+        User user = userService.getUser(notificationValidator.getUsername(), notificationValidator.getPassword());
         if (user == null) {
             return new ResponseEntity<>("Username or password is incorrect", HttpStatus.UNAUTHORIZED);
         }
@@ -80,16 +83,21 @@ public class OrderController {
             return new ResponseEntity<>("No order found", HttpStatus.NOT_FOUND);
         }
 
-        return orderService.placeOrder(user, new SMS()) ;
+        ChannelStrategy channelStrategy = notificationValidator.getNotficationChannel();
+        if (channelStrategy == null) {
+            return new ResponseEntity<>("Notifcation Channel not specified or not supported", HttpStatus.BAD_REQUEST);
+        }
+
+        return orderService.placeOrder(user, channelStrategy);
     }
 
 
     @PostMapping("/ship")
-    public ResponseEntity<String> shiporder(@RequestBody LoginValidator loginValidator) {
+    public ResponseEntity<String> shiporder(@Valid @RequestBody NotificationValidator notificationValidator ) {
         OrderService orderService = new OrderServiceImpl();
         
         UserService userService = new UserServiceImpl();
-        User user = userService.getUser(loginValidator.getUsername(), loginValidator.getPassword());
+        User user = userService.getUser(notificationValidator.getUsername(), notificationValidator.getPassword());
         if (user == null) {
             return new ResponseEntity<>("Username or password is incorrect", HttpStatus.UNAUTHORIZED);
         }
@@ -98,22 +106,30 @@ public class OrderController {
             return new ResponseEntity<>("No order found", HttpStatus.NOT_FOUND);
         }
         
-        System.out.println(user.getBalance());
-        // TODO: is this the best way to use sms channel ???
-        return orderService.shipOrder(user, new SMS());
+        ChannelStrategy channelStrategy = notificationValidator.getNotficationChannel();
+        if (channelStrategy == null) {
+            return new ResponseEntity<>("Notifcation Channel not specified or not supported", HttpStatus.BAD_REQUEST);
+        }
+
+        return orderService.shipOrder(user, channelStrategy);
     }
 
     @PostMapping("/cancel/{id}")
-    public ResponseEntity<String> cancelorder(@RequestBody LoginValidator loginValidator, @PathVariable String id) {
+    public ResponseEntity<String> cancelorder(@Valid @RequestBody NotificationValidator notificationValidator, @PathVariable String id) {
         OrderService orderService = new OrderServiceImpl();
         
         UserService userService = new UserServiceImpl();
-        User user = userService.getUser(loginValidator.getUsername(), loginValidator.getPassword());
+        User user = userService.getUser(notificationValidator.getUsername(), notificationValidator.getPassword());
         if (user == null) {
             return new ResponseEntity<>("Username or password is incorrect", HttpStatus.UNAUTHORIZED);
         }
         
-        return orderService.cancelOrder(user, new SMS(), id);
+        ChannelStrategy channelStrategy = notificationValidator.getNotficationChannel();
+        if (channelStrategy == null) {
+            return new ResponseEntity<>("Notifcation Channel not specified or not supported", HttpStatus.BAD_REQUEST);
+        }
+
+        return orderService.cancelOrder(user, channelStrategy, id);
     }
     
 }

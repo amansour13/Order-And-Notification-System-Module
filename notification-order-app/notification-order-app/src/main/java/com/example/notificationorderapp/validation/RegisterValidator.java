@@ -5,6 +5,8 @@ import jakarta.validation.constraints.*;
 public class RegisterValidator {
 
     @NotBlank(message = "The username is required.")
+    @NotEmpty(message = "The username is required.")
+    @NotNull(message = "The username is required.")
     @Size(min = 3, max = 20, message = "The username must be from 3 to 20 characters.")
     private String username;
 

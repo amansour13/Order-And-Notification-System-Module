@@ -1,9 +1,14 @@
 package com.example.notificationorderapp;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.example.notificationorderapp.model.Category;
+import com.example.notificationorderapp.model.Notification;
 import com.example.notificationorderapp.model.Product;
 import com.example.notificationorderapp.util.Database;
 
@@ -51,6 +56,7 @@ public class NotificationOrderAppApplication {
 
 	public static void main(String[] args) {
 		populateDatabase();
+		Notification.waitAndSendNotifications();
 		SpringApplication.run(NotificationOrderAppApplication.class, args);
 	}
 
