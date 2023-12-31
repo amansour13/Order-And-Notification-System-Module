@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "2125c6e3-1fe7-409f-8784-407a666c7411",
+		"_postman_id": "23bf46f4-60e9-470e-8acd-f74f027770d2",
 		"name": "Notification-Order-App",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "28549426"
+		"_exporter_id": "31112953"
 	},
 	"item": [
 		{
@@ -65,24 +65,6 @@
 				},
 				{
 					"name": "login",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"seno\",\r\n    \"password\": \"thisisanother\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": "{{baseUrl}}/login"
-					},
-					"response": []
-				},
-				{
-					"name": "getUser",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -170,7 +152,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"mazen\", \r\n    \"password\": \"thisispass\",\r\n    \"notificationMethod\": \"email\"\r\n}",
+							"raw": "{\r\n    \"username\": \"mazen\", \r\n    \"password\": \"thisispass\",\r\n    \"notificationMethod\": \"email\",\r\n    \"langauge\": \"English\"\r\n\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -188,7 +170,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"mazen\", \r\n    \"password\": \"thisispass\",\r\n    \"notificationMethod\": \"SMS\"\r\n\r\n}",
+							"raw": "{\r\n    \"username\": \"mazen\", \r\n    \"password\": \"thisispass\",\r\n    \"notificationMethod\": \"SMS\",\r\n    \"langauge\": \"English\"\r\n\r\n\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -206,7 +188,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"seno\", \r\n    \"password\": \"thisisanother\",\r\n    \"notificationMethod\": \"email\"\r\n\r\n}",
+							"raw": "{\r\n    \"username\": \"seno\", \r\n    \"password\": \"thisisanother\",\r\n    \"notificationMethod\": \"email\",\r\n    \"langauge\": \"English\"\r\n\r\n\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -224,7 +206,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"seno\", \r\n    \"password\": \"thisisanother\",\r\n    \"notificationMethod\": \"email\"\r\n\r\n}",
+							"raw": "{\r\n    \"username\": \"seno\", \r\n    \"password\": \"thisisanother\",\r\n    \"notificationMethod\": \"email\",\r\n    \"langauge\": \"arabic\"\r\n\r\n\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -242,7 +224,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"mazen\", \r\n    \"password\": \"thisispass\",\r\n    \"notificationMethod\": \"sms\"\r\n\r\n}",
+							"raw": "{\r\n    \"username\": \"mazen\", \r\n    \"password\": \"thisispass\",\r\n    \"notificationMethod\": \"sms\",\r\n    \"langauge\": \"English\"\r\n\r\n\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -260,14 +242,14 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"seno\", \r\n    \"password\": \"thisisanother\",\r\n    \"notificationMethod\": \"sms\"\r\n}",
+							"raw": "{\r\n    \"username\": \"seno\", \r\n    \"password\": \"thisisanother\",\r\n    \"notificationMethod\": \"sms\",\r\n    \"langauge\": \"English\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "{{baseUrl}}/order/cancel/2"
+						"url": "{{baseUrl}}/order/cancel/0"
 					},
 					"response": []
 				},
