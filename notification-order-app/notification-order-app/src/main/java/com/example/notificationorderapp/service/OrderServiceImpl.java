@@ -47,6 +47,10 @@ public class OrderServiceImpl implements OrderService{
             }
 
             if (order.getStatus().equals("none")){
+                ResponseEntity<String> paidStatus = payForEachOrder(order);
+                if (paidStatus.getStatusCode() != HttpStatus.OK) {
+                    return paidStatus;
+                }
                 order.setStatus("placed");
                  
                 Notification notification = new Notification();
@@ -80,7 +84,8 @@ public class OrderServiceImpl implements OrderService{
             Order order = (Order) user.getOrder();
 
             if (order.getStatus().equals("placed")){
-                ResponseEntity<String> paidStatus = payForEachOrder(order);
+                // pay shipping fees
+                ResponseEntity<String> paidStatus = payForEachOrderShipFee(order);
                 if (paidStatus.getStatusCode() != HttpStatus.OK) {
                     return paidStatus;
                 }
@@ -112,12 +117,11 @@ public class OrderServiceImpl implements OrderService{
     }
 
     private ResponseEntity<String> payForEachOrder(ComponentOrder order) {
-        double feeForEach = ((Order)order).getShippingFees() / ((Order)order).getComponents().size();
 
         for (ComponentOrder co : ((Order)order).getComponents()) {
             Order o = (Order) co;
-            if (users.get(o.getOwner()).getBalance() < o.getTotalPrice() + feeForEach) {
-                return new ResponseEntity<>("Not enough money, for user: " + users.get(o.getOwner()).getUsername(), HttpStatus.CONFLICT);
+            if (users.get(o.getOwner()).getBalance() < o.getTotalPrice() ) {
+                return new ResponseEntity<>("Not enough money for paying Order Fees, for user: " + users.get(o.getOwner()).getUsername(), HttpStatus.CONFLICT);
             }
             for (ComponentOrder pro : o.getComponents()) {
                 Product p = (Product) pro;
@@ -129,13 +133,31 @@ public class OrderServiceImpl implements OrderService{
         for (ComponentOrder co : ((Order)order).getComponents()) {
             Order o = (Order) co;
             User user = users.get(o.getOwner());
-            user.setBalance(user.getBalance() - o.getTotalPrice() - feeForEach);
+            user.setBalance(user.getBalance() - o.getTotalPrice());
 
             for (ComponentOrder pro : o.getComponents()) {
                 Product p = (Product) pro;
                 products.get(p.getSerialNumber()).setStock(products.get(p.getSerialNumber()).getStock() - p.getStock());
             }
 
+        }
+
+        return new ResponseEntity<>("Succeess, orderId: " + ((Order)order).getID(), HttpStatus.OK);
+    }
+
+    private ResponseEntity<String> payForEachOrderShipFee(ComponentOrder order) {
+        double feeForEach = ((Order)order).getShippingFees() / ((Order)order).getComponents().size();
+
+        for (ComponentOrder co : ((Order)order).getComponents()) {
+            Order o = (Order) co;
+            if (users.get(o.getOwner()).getBalance() < feeForEach) {
+                return new ResponseEntity<>("Not enough money for Shipping Fees, for user: " + users.get(o.getOwner()).getUsername(), HttpStatus.CONFLICT);
+            }
+        }
+        for (ComponentOrder co : ((Order)order).getComponents()) {
+            Order o = (Order) co;
+            User user = users.get(o.getOwner());
+            user.setBalance(user.getBalance() - feeForEach);
         }
 
         return new ResponseEntity<>("Succeess, orderId: " + ((Order)order).getID(), HttpStatus.OK);
@@ -156,6 +178,7 @@ public class OrderServiceImpl implements OrderService{
             // cacnel -> (placed)
             if (order.getStatus().equals("placed"))
             {
+                returnMoneyForEachOrder(order);
                 sendCancelNotify(user,  channel, langauge, order);
                 user.setOrder(null);
                 return new ResponseEntity<>("Order cancelled successfully", HttpStatus.OK);
@@ -195,13 +218,30 @@ public class OrderServiceImpl implements OrderService{
         }
     }
 
-     private ResponseEntity<String> returnMoneyForEach(ComponentOrder order) {
+    private ResponseEntity<String> returnMoneyForEach(ComponentOrder order) {
         double feeForEach = ((Order)order).getShippingFees() / ((Order)order).getComponents().size();
 
         for (ComponentOrder co : ((Order)order).getComponents()) {
             Order o = (Order) co;
             User user = users.get(o.getOwner());
             user.setBalance(user.getBalance() + o.getTotalPrice() + feeForEach);
+
+            for (ComponentOrder pro : o.getComponents()) {
+                Product p = (Product) pro;
+                products.get(p.getSerialNumber()).setStock(products.get(p.getSerialNumber()).getStock() + p.getStock());
+            }
+
+        }
+
+        return new ResponseEntity<>("Succeess, orderId: " + ((Order)order).getID(), HttpStatus.OK);
+    }
+
+    private ResponseEntity<String> returnMoneyForEachOrder(ComponentOrder order) {
+
+        for (ComponentOrder co : ((Order)order).getComponents()) {
+            Order o = (Order) co;
+            User user = users.get(o.getOwner());
+            user.setBalance(user.getBalance() + o.getTotalPrice());
 
             for (ComponentOrder pro : o.getComponents()) {
                 Product p = (Product) pro;
@@ -280,15 +320,5 @@ public class OrderServiceImpl implements OrderService{
 
      private void addToNotificationsQueue(Notification notification){
         notificationsQueue.add(notification);
-        // long delay = 2;
-        // long delayInNanos = TimeUnit.MINUTES.toNanos(delay);
-        // ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-        // LocalDateTime scheduledTime = LocalDateTime.now().plusNanos(TimeUnit.NANOSECONDS.toNanos(delayInNanos));
-        // scheduler.schedule(() -> {
-            
-        //     notificationsQueue.remove(notification);
-            
-        // }, LocalDateTime.now().until(scheduledTime, ChronoUnit.NANOS), TimeUnit.NANOSECONDS);
-      
     }
 }
