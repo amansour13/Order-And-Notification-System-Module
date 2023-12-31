@@ -1,14 +1,14 @@
 package com.example.notificationorderapp.model.Messages;
 
 import com.example.notificationorderapp.model.User;
+import com.example.notificationorderapp.Langauges.ILangauge;
 import com.example.notificationorderapp.model.ComponentOrder;
 
 public abstract class MessageTemplate {
     private String subject;
     private String content;
-    private String language;
     
-    abstract public void createMessage(ComponentOrder order, User user);
+    abstract public void createMessage(ComponentOrder order, User user, ILangauge langauge );
     
     public String getSubject() {
         return subject;
@@ -24,13 +24,5 @@ public abstract class MessageTemplate {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
     }
 }

@@ -3,6 +3,9 @@ package com.example.notificationorderapp.validation;
 import com.example.notificationorderapp.Channels.ChannelStrategy;
 import com.example.notificationorderapp.Channels.Email;
 import com.example.notificationorderapp.Channels.SMS;
+import com.example.notificationorderapp.Langauges.Arabic;
+import com.example.notificationorderapp.Langauges.English;
+import com.example.notificationorderapp.Langauges.ILangauge;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -29,6 +32,14 @@ public class NotificationValidator{
     @Size(min = 0)
     private String notificationMethod;
 
+    @NotBlank(message = "The language is required.")
+    @NotEmpty(message = "The language is required.")
+    @NotNull(message = "The langauge is required.")
+    @Size(min = 0)
+    private String langauge;
+
+    
+    
     public ChannelStrategy getNotficationChannel() {
         notificationMethod = notificationMethod.toLowerCase();
         switch (notificationMethod) {
@@ -39,6 +50,22 @@ public class NotificationValidator{
             default:
                 return null;
         }
+    }
+
+    public ILangauge getLangaugeClass() {
+        langauge = langauge.toLowerCase();
+        switch (langauge) {
+            case "english":
+                return new English(); 
+            case "arabic":
+                return new Arabic(); 
+            default:
+                return null;
+        }
+    }
+
+    public String getLangauge() {
+        return langauge;
     }
 
     public String getNotificationMethod() {

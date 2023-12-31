@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.notificationorderapp.Channels.ChannelStrategy;
+import com.example.notificationorderapp.Langauges.ILangauge;
 import com.example.notificationorderapp.model.Order;
 import com.example.notificationorderapp.model.User;
 import com.example.notificationorderapp.service.OrderService;
@@ -74,11 +75,15 @@ public class OrderController {
         }
 
         ChannelStrategy channelStrategy = notificationValidator.getNotficationChannel();
+        ILangauge langauge = notificationValidator.getLangaugeClass();
         if (channelStrategy == null) {
             return new ResponseEntity<>("Notifcation Channel not specified or not supported", HttpStatus.BAD_REQUEST);
         }
+        if (langauge== null) {
+            return new ResponseEntity<>("langauge not specified or not supported", HttpStatus.BAD_REQUEST);
+        }
 
-        return orderService.placeOrder(user, channelStrategy);
+        return orderService.placeOrder(user, channelStrategy, langauge);
     }
 
 
@@ -92,13 +97,17 @@ public class OrderController {
         if (user.getOrder() == null) {
             return new ResponseEntity<>("No order found", HttpStatus.NOT_FOUND);
         }
-        
+
         ChannelStrategy channelStrategy = notificationValidator.getNotficationChannel();
+        ILangauge langauge = notificationValidator.getLangaugeClass();
         if (channelStrategy == null) {
             return new ResponseEntity<>("Notifcation Channel not specified or not supported", HttpStatus.BAD_REQUEST);
         }
+        if (langauge== null) {
+            return new ResponseEntity<>("langauge not specified or not supported", HttpStatus.BAD_REQUEST);
+        }
 
-        return orderService.shipOrder(user, channelStrategy);
+        return orderService.shipOrder(user, channelStrategy, langauge);     
     }
 
     @PostMapping("/cancel/{id}")
@@ -109,11 +118,15 @@ public class OrderController {
         }
         
         ChannelStrategy channelStrategy = notificationValidator.getNotficationChannel();
+        ILangauge langauge = notificationValidator.getLangaugeClass();
         if (channelStrategy == null) {
             return new ResponseEntity<>("Notifcation Channel not specified or not supported", HttpStatus.BAD_REQUEST);
         }
+        if (langauge== null) {
+            return new ResponseEntity<>("langauge not specified or not supported", HttpStatus.BAD_REQUEST);
+        }
 
-        return orderService.cancelOrder(user, channelStrategy, id);
+        return orderService.cancelOrder(user, channelStrategy, langauge, id);
     }
     
 }

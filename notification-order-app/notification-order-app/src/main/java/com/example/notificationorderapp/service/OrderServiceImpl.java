@@ -1,7 +1,7 @@
 package com.example.notificationorderapp.service;
 
 import com.example.notificationorderapp.Channels.ChannelStrategy;
-
+import com.example.notificationorderapp.Langauges.ILangauge;
 import com.example.notificationorderapp.model.ComponentOrder;
 import com.example.notificationorderapp.model.Order;
 import com.example.notificationorderapp.model.Product;
@@ -39,7 +39,7 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public ResponseEntity<String> placeOrder(User user, ChannelStrategy channel) {
+    public ResponseEntity<String> placeOrder(User user, ChannelStrategy channel, ILangauge langauge) {
         try {
             Order order = (Order) user.getOrder();
             if (order.getStatus().equals("placed")) {
@@ -54,7 +54,7 @@ public class OrderServiceImpl implements OrderService{
 
                 for (ComponentOrder o : order.getComponents()) {
                     User u = users.get(((Order) o).getOwner());
-                    message.createMessage(o, u);
+                    message.createMessage(o, u, langauge);
                     notification.setMessage(message);
                     notification.setChannel(channel);
                     notification.setUser(user);
@@ -75,7 +75,7 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public ResponseEntity<String> shipOrder(User user, ChannelStrategy channel) {
+    public ResponseEntity<String> shipOrder(User user, ChannelStrategy channel, ILangauge langauge) {
        try {
             Order order = (Order) user.getOrder();
 
@@ -93,7 +93,7 @@ public class OrderServiceImpl implements OrderService{
 
                 for (ComponentOrder o : order.getComponents()) {
                     User u = users.get(((Order) o).getOwner());
-                    message.createMessage(o, u);
+                    message.createMessage(o, u, langauge);
                     notification.setMessage(message);
                     notification.setChannel(channel);
                     notification.setUser(user);
@@ -142,7 +142,7 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public ResponseEntity<String> cancelOrder(User user , ChannelStrategy channel, String orderId) {
+    public ResponseEntity<String> cancelOrder(User user , ChannelStrategy channel, ILangauge langauge, String orderId) {
 //        try {
             Order order = (Order)orders.get(Integer.parseInt(orderId));
             if (order == null || !order.getOwner().equals(user.getUsername())) {
@@ -156,7 +156,7 @@ public class OrderServiceImpl implements OrderService{
             // cacnel -> (placed)
             if (order.getStatus().equals("placed"))
             {
-                sendCancelNotify(user,  channel, order);
+                sendCancelNotify(user,  channel, langauge, order);
                 user.setOrder(null);
                 return new ResponseEntity<>("Order cancelled successfully", HttpStatus.OK);
             }
@@ -169,7 +169,7 @@ public class OrderServiceImpl implements OrderService{
                 boolean checkTime = Math.abs(daysDifference) <= 1;
                 if (checkTime){
                     returnMoneyForEach(order);
-                    sendCancelNotify(user, channel, order);
+                    sendCancelNotify(user, channel, langauge, order);
                     return new ResponseEntity<>("Order cancelled successfully", HttpStatus.OK);
                     
                 }else{ 
@@ -264,13 +264,13 @@ public class OrderServiceImpl implements OrderService{
     }
 
 
-    private void sendCancelNotify(User user, ChannelStrategy channel, Order userOrder) {
+    private void sendCancelNotify(User user, ChannelStrategy channel, ILangauge langauge, Order userOrder) {
         userOrder.setStatus("cancelled");
         orders.put(userOrder.getID(), userOrder);
 
         Notification notification = new Notification();
         MessageTemplate message = new Cancellation();
-        message.createMessage(userOrder, user);
+        message.createMessage(userOrder, user, langauge);
         notification.setMessage(message);
         notification.setChannel(channel);
         notification.setUser(user);
